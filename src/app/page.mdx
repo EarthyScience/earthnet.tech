@@ -23,13 +23,38 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
+    <div className={`w-full rounded-lg overflow-hidden`}>
+      <div className="mx-auto py-2 md:py-2 flex flex-col md:flex-row items-center">
+          <>
+          <div className="md:w-2/3 mb-8 md:mb-0 md:mx-8 text-center md:text-left">
+            <h1 
+              className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-bold leading-tight px-2 -mb-3"
+              style={{
+                background: 'linear-gradient(90deg, #2563eb, #22c55e, #0d9488)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+            >
+              EarthNet Initiative
+            </h1>
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold leading-tight px-2 text-gray-700">
+              Towards Earth surface forecasting
+            </h2>
+          </div>
+            <div className={`md:w-1/2 flex justify-center md:mx-8`}>
+            <MagicBox />
+            </div>
+          </>
+      </div>
+    </div>
 
-<ContentSplitSection
+{/* <ContentSplitSection
     title="EarthNet Initiative" 
-    subtitle="A machine learning challenge and dataset for Earth surface and localized impact forecasting."
+    subtitle="Towards Earth surface forecasting"
     media={<MagicBox />}
     layout='text-emphasis'
-/>
+/> */}
 
 
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
