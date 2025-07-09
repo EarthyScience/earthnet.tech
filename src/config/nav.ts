@@ -1,14 +1,17 @@
 // main navigation
 export const navigation = [
+
+      { 
+      text: 'About',
+      isHome: true,
+      name: 'EarthNet',
+      description: "something",
+    },
     { 
       text: 'Project',
-      isHome: true,
-      name: 'Next Project Site',
-      description: "Start your new project site with a clean and modern design.",
+      name: 'EarthNet',
+      description: "something",
       items: [
-        { text: 'About', link: '/project/about',
-          description: "Learn more about the project, its goals, and its impact.",
-         },
         { text: 'Team', link: '/project/team',
           description: "Meet the team behind the project, their roles, and contributions.",
          },
@@ -37,7 +40,7 @@ export const navigation = [
           },
         ]
       },
-    { text: 'Events', link: '/events' },
+    // { text: 'Events', link: '/events' },
     { text: 'News', link: '/blog' },
     { text: 'Contact', link: '/contact' },
   ];

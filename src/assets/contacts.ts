@@ -1,7 +1,7 @@
 import { AddressData, ContactData } from '@/components/FooterTypes';
 
 export const contactInfo = {
-  copyright: "Lazaro Alonso",
+  copyright: "EarthNet team",
   contact: {
     address: {
       company: "Max-Planck Institute for Biogeochemistry",
@@ -15,9 +15,9 @@ export const contactInfo = {
     data: {
       contacts: [
         {
-          name: "Lazaro Alonso",
-          position: "Researcher",
-          email: "lalonso@bgc-jena.mpg.de"
+          name: "team",
+          // position: "Researcher",
+          email: "earthnet@bgc-jena.mpg.de"
         },
         // {
         //   name: "Alice",
