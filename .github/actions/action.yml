@@ -1,0 +1,31 @@
+name: Setup repo
+description: Install dependencies and perform setup for https://github.com/EarthyScience/next-project-site/
+
+inputs:
+  node:
+    default: lts/*
+    description: Node version to use
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node (${{ inputs.node }})
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node }}
+        registry-url: "https://registry.npmjs.org"
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install
+
+    - name: Build
+      shell: bash
+      run: pnpm build
+
+    - name: Post-build install
+      shell: bash
+      run: pnpm install
