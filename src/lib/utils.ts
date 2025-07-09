@@ -7,6 +7,6 @@ export function cn(...inputs: ClassValue[]) {
 
 
 export const withBasePath = (path: string) => {
-  const basePath =  process.env.NODE_ENV === 'production' ? '/next-project-site' : ''
+  const basePath =  process.env.NODE_ENV === 'production' ? '/earthnet.tech' : ''
   return `${ basePath || ''}${path}`;
 };
