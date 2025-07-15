@@ -45,7 +45,7 @@
   .imgBx {
     position: relative;
     width: 300px;
-    height: 180px;
+    height: 300px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -96,9 +96,9 @@
   
   .content {
     position: absolute;
-    bottom: 0;
+    bottom: 5px;
     width: 100%;
-    height: calc(480px - 180px);
+    height: calc(480px - 260px);
     padding: 15px;
     box-sizing: border-box;
   }
@@ -114,6 +114,9 @@
     color: var(--link-color);
     text-transform: uppercase;
     letter-spacing: 1px;
+   background: linear-gradient(225deg, 
+      var(--card) 0%, 
+      var(--muted) 50%);
   }
   
   .details h2 span {
@@ -145,7 +148,7 @@
   .description {
     /* flex-grow: 1; */
     overflow-y: auto;
-    max-height: 120px;
+    max-height: 65px;
   }
   
   .description ul {
