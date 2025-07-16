@@ -1,0 +1,250 @@
+
+[![arXiv](https://img.shields.io/badge/arXiv-2303.16198-b31b1b.svg)](https://arxiv.org/abs/2303.16198)
+
+## Overview
+
+[GreenEarthNet](https://arxiv.org/abs/2303.16198) is an updated version of the EarthNet2021 dataset. Improvements are mainly:
+
+- Files are now netCDF (having proper georeferencing)
+- Landcover map included
+- New cloud mask
+- New Scoring with a focus on vegetation modeling
+- No more mesoscale weather
+
+It contains the same locations of minicubes that were present in EarthNet2021.
+
+> **_NOTE:_**  In the paper the dataset is called **GreenEarthNet**, but in the codebase you will also find the following acronyms that were used during development: `earthnet2021x`, `en21x`.
+
+## One Minicube
+
+One Minicube (one sample) of GreenEarthNet contains 20 variables of different dimensions:
+
+- Spatio-temporal:
+    - Sentinel 2
+        - Bands B02, B03, B04, B8A (blue, green, red, near-infrared)
+        - 20m resolution
+        - 5-daily (with NaN in between)
+        - Variable names `["s2_B02", "s2_B03", "s2_B04", "s2_B8A"]`
+    - Sentinel 2 Auxilary information
+        - Improved cloud mask (variable name `"s2_mask"`)
+        - Scene classification layer SCL (variable name `"s2_SCL"`)
+        - Availability indicator (only temporal, variable name `"s2_avail"`)
+- Temporal:
+    - E-OBS meterology
+        - Wind speed `"eobs_fg"` (often missing!)
+        - Relative humidity `"eobs_hu"`
+        - Rainfall `"eobs_rr"`
+        - Sea-level pressure `"eobs_pp"`
+        - Shortwave downwelling radiation `"eobs_qq"`
+        - Temperature (Daily Avg, Min, Max: `"eobs_tg", "eobs_tn", "eobs_tx"`)
+        - daily
+- Spatial:
+    - Digital Elevation models
+        - from NASA, ESA and JAXA
+        - Variable names `["nasa_dem", "cop_dem", "alos_dem"]`
+        - Resampled to 20m
+    - ESA Worldover Landcover map
+        - `"esawc_lc"`
+    - Geomorpho90m terrain classification
+        - `"geom_cls"`
+
+## Computing NDVI
+
+The recommended way for computing the Normalized Difference Vegetation Index (NDVI) is using the Python package `xarray`:
+
+```
+import xarray as xr
+
+minicube = xr.open_dataset("path_to_minicube")
+nir = minicube.s2_B8A
+red = minicube.s2_B04
+mask = minicube.s2_mask
+
+ndvi = ((nir - red) / (nir + red + 1e-8)).where(mask == 0, np.NaN)
+
+minicube["s2_ndvi"] = ndvi
+```
+
+## Getting Sentinel 2 dates
+
+Sentinel 2 observations are only (at maximum) 5-daily within the minicube. They are on each 5th datum, i.e. there is preceding 4 days of meterological observations before each Sentinel 2 observation.
+
+You may select only dates with Sentinel 2 observations using the Python package `xarray`:
+
+```
+import xarray as xr
+minicube = xr.open_dataset("path_to_minicube")
+minicube_on_sen2_dates = minicube.isel(time = slice(4, None, 5))
+```
+
+## Aggregating E-OBS data to 5-daily
+
+You may want to aggregate E-OBS data to 5-daily to match with Sentinel 2 observations. This is possible using the Python package `xarray`:
+
+```
+import xarray as xr
+minicube = xr.open_dataset("path_to_minicube")
+minicube_5daily = minicube.coarsen(time = 5, coord_func = "max").mean()
+```
+
+Instead of `mean()`, you may use other aggregation functions such as `min()` or `max()`.
+
+
+## Folder structure
+
+After downloading GreenEarthNet to your `data_dir`, you will have the following folder structure:
+```
+data_dir
+├── train   			# training set
+|  ├── 29SND      # Sentinel 2 tile with samples at lon 29, lat S, subquadrant ND
+|  |  ├── 29SND_2017...124.nc 	# First training minicube, name cubename.nc
+|  |  └── ...
+|  ├── 29SPC      # there is 85 tiles in the train set
+|  └── ...      # with 23816 .nc train minicubes in total
+├── val_chopped    # validation set
+|     └── ... # same as train, but with test samples
+├── ood-t_chopped     # ood-t test set
+|     └── ...
+├── ood-s_chopped    # ood-s test set
+|     └── ...
+└── ood-st_chopped   # ood-st test set
+|     └── ...
+
+```
+
+
+## Downloading GreenEarthNet
+
+GreenEarthNet is hosted on the MinIO server (similar to Amazon S3 storage) of the Max-Planck-Institute for Biogeochemistry.
+
+You may download it using the **EarthNet Toolkit**.
+
+### Installing EarthNet Toolkit
+
+```
+pip install earthnet
+```
+
+### Downloading GreenEarthNet with EarthNet Toolkit
+
+```
+import earthnet as entk
+entk.download(dataset = "greenearthnet", split = "train", save_directory = "data_dir")
+````
+
+Where `data_dir` is the directory where GreenEarthNet shall be saved and `split` is `"all"`or a subset of `["train","val_chopped","ood-t_chopped","ood-s_chopped","ood-st_chopped"]`.
+
+
+## Scoring your predictions
+
+You can score your predictions using the EarthNet toolkit (`pip install earthnet`)
+
+Save your predictions for one test set in one folder in the following way:
+`{pred_dir/region/cubename.nc}`
+Name your NDVI prediction variable as `"ndvi_pred"`.
+
+Then use the `data_dir/dataset/split` as the targets.
+
+Then compute the normalized NSE over the full dataset:
+```
+import earthnet as entk
+scores = entk.score_over_dataset(Path/to/targets, Path/to/predictions)
+print(scores["veg_score"])
+```
+
+Alternatively you can score a single minicube:
+```
+import earthnet as entk
+df = entk.normalized_NSE(Path/to/target_minicube, Path/to/prediction_minicube)
+print(df.describe())
+```
+
+## Vegetation Score
+
+GreenEarthNet uses a vegetation score to benchmark different models.
+
+It is the average [Nash Sutcliffe Model Efficiency](https://en.wikipedia.org/wiki/Nash%E2%80%93Sutcliffe_model_efficiency_coefficient) (sometimes equivalent to the [Coefficient of Determination R^2](https://en.wikipedia.org/wiki/Coefficient_of_determination)) on cloud-free observations of Vegetation Pixels.
+
+More specifically:
+1. For each pixel compute the Nash-Sutcliffe Model Efficiency (NSE) at cloud-free observations
+2. Rescale this with `1 / (2-nse)` to the range 0-1 for robust averaging
+3. Averaging over all natural vegetation pixels (Landcover class Trees, Scrub or Grassland)
+4. Scaling back with `2 - 1/mean_nnse` to the range -Inf,1
+
+The Vegetation Score is 1 if the prediction is perfect.
+It is 0 if on average predictions are as good as the mean over the target period.
+It is negative if on average predictions are worse than the mean of the target period.
+
+In Pseudo-Code it is computed as follows:
+
+```
+nse = NSE(targ_ndvi, pred_ndvi).where(targ_ndvi has no clouds)
+nnse = 1 / (2-nse)
+veg_score = 2 - 1/mean(nnse.where(landcover == Trees, Scrub or Grassland))
+```
+
+Models can use a context length for spin-up and are benchmarked over a target length, which is specified for the different test sets (tracks) as follows (same as EarthNet2021):
+- IID: 50 days context, 100 days target
+- OOD: 50 days context, 100 days target
+- Extreme: 100 days context, 200 days target
+- Seasonal: 350 days context, 700 days target
+
+Here, five days equal one Sen2 observation.
+
+
+## Cite us
+
+We are very pleased to present GreenEarthNet to the community. Please cite our work using one of the following methods
+
+### Bibtex
+```latex
+@article{benson2024multimodal,
+  title = {Multi-modal learning for geospatial vegetation forecasting},
+  author = {Benson, Vitus and Robin, Claire and Requena-Mesa, Christian and Alonso, Lazaro and Carvalhais, Nuno and Cortés, José and Gao, Zhihan and Linscheid, Nora and Weynants, Mélanie and Reichstein, Markus},
+  year = {2024},
+  month = jun,
+  journal = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+}
+```
+### Other
+
+Vitus Benson, Claire Robin, Christian Requena-Mesa, Lazaro Alonso, Nuno Carvalhais, José Cortés, Zhihan Gao, Nora Linscheid, Mélanie Weynants and Markus Reichstein. Multi-modal learning for geospatial vegetation forecasting
+. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2024.
+
+
+
+## License
+GreenEarthNet (formerly known as EarthNet2021x) is shared under CC-BY-NC-SA 4.0. You can understand our license in plain English: https://tldrlegal.com/license/creative-commons-attribution-noncommercial-sharealike-4.0-international-(cc-by-nc-sa-4.0). 
+
+CC BY-NC-SA 4.0 License
+
+Copyright (c) 2024 Max-Planck-Institute for Biogeochemistry, Vitus Benson, Christian Requena-Mesa, Markus Reichstein
+
+This data is licensed under CC BY-NC-SA 4.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/4.0
+
+When using this dataset in a research publication, please cite the following original publication:
+Vitus Benson, Claire Robin, Christian Requena-Mesa, Lazaro Alonso, Nuno Carvalhais, José Cortés, Zhihan Gao, Nora Linscheid, Mélanie Weynants and Markus Reichstein. Multi-modal learning for geospatial vegetation forecasting. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2024.
+
+This Dataset uses E-OBS v26 observational data (2016-2023).
+
+We acknowledge the E-OBS dataset and the data providers in the ECA&D project (https://www.ecad.eu). Cornes, R., G. van der Schrier, E.J.M. van den Besselaar, and P.D. Jones. 2018: An Ensemble Version of the E-OBS Temperature and Precipitation Datasets, J. Geophys. Res. Atmos., 123. doi:10.1029/2017JD028200
+
+See the full license at https://apps.ecmwf.int/datasets/licences/era5/ .
+
+This Dataset uses Copernicus Sentinel data (2016-2023).
+
+The access and use of Copernicus Sentinel Data and Service Information is regulated under EU law.1 In particular, the law provides that users shall have a free, full and open access to Copernicus Sentinel Data2 and Service Information without any express or implied warranty, including as regards quality and suitability for any purpose. 3 EU law grants free access to Copernicus Sentinel Data and Service Information for the purpose of the following use in so far as it is lawful4 : (a) reproduction; (b) distribution; (c) communication to the public; (d) adaptation, modification and combination with other data and information; (e) any combination of points (a) to (d). EU law allows for specific limitations of access and use in the rare cases of security concerns, protection of third party rights or risk of service disruption. By using Sentinel Data or Service Information the user acknowledges that these conditions are applicable to him/her and that the user renounces to any claims for damages against the European Union and the providers of the said Data and Information. The scope of this waiver encompasses any dispute, including contracts and torts claims, that might be filed in court, in arbitration or in any other form of dispute settlement.
+
+This Dataset uses the sen2flux Cloud mask from David Montero Loaiza, Leipzig University (https://github.com/davemlz). We are grateful for his contributions.
+
+This Dataset uses ESA WorldCover (https://esa-worldcover.org/en/data-access) under CC BY 4.0. We acknowledge the ESA WorldCover data.
+© ESA WorldCover project 2020 / Contains modified Copernicus Sentinel data (2020) processed by ESA WorldCover consortium.
+
+This Dataset uses Geomorpho90m data (https://portal.opentopography.org/dataspace/dataset?opentopoID=OTDS.012020.4326.1)
+
+We acknowledge the Geomorpho90m data. Amatulli, G., McInerney, D., Sethi, T., Strobl, P., Domisch, S. (2020). Geomorpho90m - Global High-Resolution Geomorphometry Layers. Distributed by OpenTopography. https://doi.org/10.5069/G91R6NPX. Accessed: 2021-12-17
+
+This Dataset uses SRTM DEM data under CC-BY-4.0 (https://docs.digitalearthafrica.org/en/latest/data_specs/SRTM_DEM_specs.html). We acknowledge the SRTM DEM data.
+See: T.G., Rosen, P. A., Caro, E., Crippen, R., Duren, R., Hensley, S., Kobrick, M., Paller, M., Rodriguez, E., Roth, L., Seal, D., Shaffer, S., Shimada, J., Umland, J., Werner, M., Oskin, M., Burbank, D., & Alsdorf, D. (2007). The Shuttle Radar Topography Mission. In Reviews of Geophysics (Vol. 45, Issue 2). American Geophysical Union (AGU). https://doi.org/10.1029/2005rg000183
+
+This Dataset uses ALOS World 3D-30m under JAXA Terms Of Use Of Research Data (https://earth.jaxa.jp/en/data/policy/).

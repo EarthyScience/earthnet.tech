@@ -5,7 +5,7 @@ import { GiBrain } from 'react-icons/gi';
 import { MdEmail } from 'react-icons/md';
 import { 
   FaGithub, FaLinkedin, FaTwitter, FaInstagram, 
-  FaFacebook, FaGlobe
+  FaFacebook, FaGlobe, FaBluesky
 } from 'react-icons/fa';
 import ProtectedEmail from './ProtectedEmail';
 import './CardProfile.css'
@@ -18,6 +18,7 @@ const SOCIAL_ICONS: { [key: string]: React.ComponentType<{ size?: number }> } = 
   instagram: FaInstagram,
   facebook: FaFacebook,
   website: FaGlobe,
+  bluesky: FaBluesky,
 };
 
 interface SocialLink {
