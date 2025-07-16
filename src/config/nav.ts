@@ -10,18 +10,19 @@ export const navigation = [
     { 
       text: 'Science',
       name: 'Science',
+      link: '/science',
       description: "Third-party funded projects with EarthNet team involvement.",
       items: [
-        { text: 'WeatherGenerator', link: '/projects/weathergenerator',
+        { text: 'WeatherGenerator', link: '/science/weathergenerator',
           description: "Horizon Europe project WeatherGenerator.",
          },
-        { text: 'ELIAS', link: '/projects/elias',
+        { text: 'ELIAS', link: '/science/elias',
           description: "Horizon Europe project ELIAS.",
          },
-        { text: 'DeepExtremes', link: '/projects/deepextremes',
+        { text: 'DeepExtremes', link: '/science/deepextremes',
           description: "ESA AI4Science project DeepExtremes.",
          },
-         { text: 'DeepCube', link: '/projects/deepcube',
+         { text: 'DeepCube', link: '/science/deepcube',
           description: "Horizon 2020 project DeepCube.",
          },
       ]
