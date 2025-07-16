@@ -26,7 +26,7 @@ interface ProtectedEmailProps {
         onKeyDown={handleKeyDown}
         role="button"
         tabIndex={0}
-        className='protected-email'
+        className='protected-email cursor-pointer'
         title="Click to email"
         aria-label="Send email"
       >

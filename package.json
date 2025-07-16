@@ -15,7 +15,7 @@
   "packageManager": "pnpm@10.8.1",
   "scripts": {
     "prChecks": "pnpm lint && pnpm buildRepo",
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "buildRepo": "pnpm rmBuild && pnpm build",
     "rmBuild": "pnpm -r exec rm -rf out",
     "build": "next build",
