@@ -1,13 +1,16 @@
 
-EarthNet2021 is a dataset and challenge for the task of Earth surface forecasting..
+# EarthNet2021
+
+EarthNet2021 is a dataset and challenge for the task of Earth surface forecasting.
 
 We describe Earth surface forecasting in detail [here](/en21/ch-task/).
 
-There are four main ressources for you to get started in Earth surface forecasting:
-  1. Download the [EarthNet2021 dataset](/en21/ds-download/).
-  2. Use the [EarthNet2021 toolkit](/en21/tk-overview/) for downloading, evaluating, data handling and plotting.
-  3. Leverage the [EarthNet2021 model intercomparison suite](/en21/mis-installation/) for analyzing the strengths and weaknesses of several modeling approaches.
-  4. Participate in the [EarthNet2021 challenge](/en21/ch-rules/).
+There are four main resources for you to get started in Earth surface forecasting:
+
+1. Download the [EarthNet2021 dataset](/en21/ds-download/).
+2. Use the [EarthNet2021 toolkit](/en21/tk-overview/) for downloading, evaluating, data handling and plotting.
+3. Leverage the [EarthNet2021 model intercomparison suite](/en21/mis-installation/) for analyzing the strengths and weaknesses of several modeling approaches.
+4. Participate in the [EarthNet2021 challenge](/en21/ch-rules/).
 
 # Installation
 
@@ -80,30 +83,30 @@ Nothing clever here 😉. Every sample is stored as a compressed numpy array .np
 
 ```bash
 EarthNet2021
-├── train   			# training set of the EarthNet2021 challenge
-|  ├── 29SND      # Sentinel 2 tile with samples at lon 29, lat S, subquadrant ND
+├── train           # training set of the EarthNet2021 challenge
+|  ├── 29SND        # Sentinel 2 tile with samples at lon 29, lat S, subquadrant ND
 |  |  ├── 29SND_2017...124.npz 	# First training sample, name cubename.npz
 |  |  └── ...
-|  ├── 29SPC      # there is 85 tiles in the train set
-|  └── ...      # with 23904 .npz train samples in total
-├── iid_test_split    # main track testing samples
+|  ├── 29SPC        # there is 85 tiles in the train set
+|  └── ...          # with 23904 .npz train samples in total
+├── iid_test_split  # main track testing samples
 |  ├── context      # input data ("context") for models
 |  |  └── 29SND       
 |  |  |   └── context_29SND_....npz # context cube, name: context_cubename.npz
 |  |  └── ...
-|  └── target     # target/output data for models
+|  └── target       # target/output data for models
 |     ├── 29SND     # tiles containing iid_test samples.
 |     |   └── target_29SND_....npz  # context cube, name: target_cubename.npz
-|     └── ...     # there is 4219 iid_test samples in total
-├── ood_test_split     # robustness track testing samples
+|     └── ...       # there is 4219 iid_test samples in total
+├── ood_test_split  # robustness track testing samples
 |  ├── context     	
-|  └── target     # there is 4214 ood_test samples in total
-├── extreme_test_split    # extreme weather testing samples
+|  └── target      # there is 4214 ood_test samples in total
+├── extreme_test_split # extreme weather testing samples
 |  ├── context     	
-|  └── target     # there is 4000 extreme_test samples in total
-└── seasonal_test_split   # seasonal testing samples
+|  └── target      # there is 4000 extreme_test samples in total
+└── seasonal_test_split # seasonal testing samples
    ├── context     	
-   └── target     # there is 4000 iid_test samples in total
+   └── target      # there is 4000 iid_test samples in total
 
 ```
 
@@ -154,7 +157,7 @@ The variables `"highresdynamic"` have:
     - B, G, R, NIR (B02, B03, B04, B8A): 0 - 2 reflectance, NaN if not available.
     - Sen2Cor Cloud Mask (CLD): 0-100 cloud probability
     - ESA Scene Classification (SCL): 0-11 categories (see [here](https://docs.sentinel-hub.com/api/latest/data/sentinel-2-l2a/))
-    - EarthNet2021 data quality mask: {0,1} binary mask, 0 if good quality, 1 if bad quality.
+    - EarthNet2021 data quality mask: `{0,1}` binary mask, 0 if good quality, 1 if bad quality.
 
 **ProTip:** Preprocess images by `imgs[imgs < 0] = 0`, `imgs[imgs > 1] = 1`, and `imgs[np.isnan(imgs)] = 0`.
 
@@ -516,7 +519,7 @@ Returns:
 
 
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/sumLCeZ92Hk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/sumLCeZ92Hk" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
 
 Climate change amplifies extreme weather events. Their impacts vary heterogeneously at the local scale. Thus forecasting localized climate impacts is highly relevant. Downstream applications include crop yield prediction, forest health assessments, biodiversity monitoring, coastline management or more general the estimation of vegetation state.
 
@@ -524,7 +527,7 @@ Climate change amplifies extreme weather events. Their impacts vary heterogeneou
 
 ![The 2018 summer heat wave impacted quite heterogenously on fields close to a river or depending on slope over the UK.](/assets/images/task-example-uk2019.png "South Dawns National Park near Seaford, UK. Satellite imagery from Sentinelhub.")
 
-The 2018 summer heat wave, as can be seen, provides an example of different areas within one region being impacted very differently by extreme weather. This might be due to factors such as a nearby river or wether a slope is north- or south-facing. But obviously complex relationships come into play here.
+The 2018 summer heat wave, as can be seen, provides an example of different areas within one region being impacted very differently by extreme weather. This might be due to factors such as a nearby river or whether a slope is north- or south-facing. But obviously complex relationships come into play here.
 
 ## The Task
 
@@ -545,7 +548,7 @@ The independent and identically distributed test set (`iid_test`) is the **main 
 
 ### Robustness Track (OOD)
 
-The out-of-domain test set (`ood_test`) is the **robustness track** of the EarthNet2021 challenge. This spatial out-of-domain setting is particularly interesting as a mean to measure the generalization capability of the models. For this track samples in the test set are drawn from a distribution of geolocations diferent to that of the training set, else it is set up exactly like the main track.
+The out-of-domain test set (`ood_test`) is the **robustness track** of the EarthNet2021 challenge. This spatial out-of-domain setting is particularly interesting as a mean to measure the generalization capability of the models. For this track samples in the test set are drawn from a distribution of geolocations different to that of the training set, else it is set up exactly like the main track.
 
 
 ### Extreme Summer Track
@@ -562,7 +565,7 @@ It contains multicubes from the spatial distribution of ood_test, but this time 
 
 ## Submit
 
-Scores can be submited to the leaderboard by directly editing and creating a pull request to `en21/pages/leaderboard.md`. New entrie to the leaderboard must link to either of these: a technical document describing the model used, a publication or the source code of the model that generated the results. If there are major reasons why the model must remain unknown to the public but still the group want to entry to the leaderboard please contact the [EN-Team](/about/)
+Scores can be submitted to the leaderboard by directly editing and creating a pull request to `en21/pages/leaderboard.md`. New entry to the leaderboard must link to either of these: a technical document describing the model used, a publication or the source code of the model that generated the results. If there are major reasons why the model must remain unknown to the public but still the group want to entry to the leaderboard please contact the [EN-Team](/about/)
 
 ## Leaderboard
 
