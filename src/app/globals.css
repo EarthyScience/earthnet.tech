@@ -58,6 +58,11 @@
   --sh-string: #10B981;
   --sh-keyword: #F472B6;
   --sh-comment: #9CA3AF;
+  /* tables */
+  --color-canvas-default: #ffffff;
+  --color-canvas-subtle: #f6f8fa;
+  --color-border-default: #d0d7de;
+  --color-border-muted: hsla(210, 18%, 87%, 1);
 }
 
 [data-theme='light'] {
@@ -127,6 +132,11 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  /* tables */
+  --color-canvas-default: var(--navbar-bg);
+  --color-canvas-subtle: var(--background-funding);
+  --color-border-default: #30363d;
+  --color-border-muted: #21262d;
 }
 
 /* Base styles for <a> elements */
@@ -169,6 +179,40 @@ pre {
   padding: 0.2em 0.25em; /* Add padding inside the block */
   border-radius: 8px; /* Smooth rounded edges */
   overflow-x: auto; /* Handle horizontal overflow for long lines */
+}
+
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  display: block;
+  margin-top: 0;
+  margin-bottom: 16px;
+  width: max-content;
+  max-width: 100%;
+  overflow: auto;
+}
+
+tr {
+  background-color: var(--color-canvas-default);
+  border-top: 1px solid var(--color-border-muted);
+}
+
+tr:nth-child(2n) {
+  background-color: var(--color-canvas-subtle);
+}
+
+td,
+th {
+  padding: 6px 13px;
+  border: 1px solid var(--color-border-default);
+}
+
+th {
+  font-weight: 600;
+}
+
+table img {
+  background-color: transparent;
 }
 
 /* Base styles */
