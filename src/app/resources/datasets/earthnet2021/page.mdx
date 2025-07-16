@@ -44,7 +44,6 @@ See [here](/en21/mis-installation/).
 The EarthNet2021 dataset is free to download and no registration is required. There is 2 ways to download the dataset.
 
 **Note:** We recommend at least **600GB** of free disk space before starting the download of EarthNet2021. 
-{: .notice--warning}
 
 ## With EarthNet2021 toolkit (Recommended)
 
@@ -109,7 +108,6 @@ EarthNet2021
 ```
 
 **ProTip:** Each cubename has format `tile_startyear_startmonth_startday_endyear_endmonth_endday_hrxmin_hrxmax_hrymin_hrymax_mesoxmin_mesoxmax_mesoymin_mesoymax`. So contains the exact spatiotemporal footprint of the particular sample.
-{: .notice--info}
 
 ## Specifications
 
@@ -159,7 +157,6 @@ The variables `"highresdynamic"` have:
     - EarthNet2021 data quality mask: {0,1} binary mask, 0 if good quality, 1 if bad quality.
 
 **ProTip:** Preprocess images by `imgs[imgs < 0] = 0`, `imgs[imgs > 1] = 1`, and `imgs[np.isnan(imgs)] = 0`.
-{: .notice--info}
 
 ## Mesodynamic
 
@@ -179,7 +176,6 @@ The variables `"mesodynamic"` have:
       - Pressure (hPa) = 200 * pressure + 900
 
 **ProTip:** Missing data in the E-OBS variables is visible by those pixels where PP = 0. Note this information does not go into the high-resolution data quality mask.
-{: .notice--info}
 
 ## Static
 
@@ -314,7 +310,6 @@ en.EarthNetScore.get_ENS(Path/to/predictions, Path/to/targets, data_output_file 
 You will find the computed EarthNetScore in `Path/to/ens.json`.
 
 **ProTip:** You can find further terms computed, such as subscores per prediction, in `Path/to/data.json`.
-{: .notice--info}
 
 
 ## API
@@ -522,7 +517,7 @@ Returns:
 
 
 
-{::nomarkdown}<iframe width="560" height="315" src="https://www.youtube.com/embed/sumLCeZ92Hk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>{:/nomarkdown}
+<iframe width="560" height="315" src="https://www.youtube.com/embed/sumLCeZ92Hk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 Climate change amplifies extreme weather events. Their impacts vary heterogeneously at the local scale. Thus forecasting localized climate impacts is highly relevant. Downstream applications include crop yield prediction, forest health assessments, biodiversity monitoring, coastline management or more general the estimation of vegetation state.
 
