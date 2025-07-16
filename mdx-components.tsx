@@ -159,23 +159,31 @@ const components = {
     <strong className="font-bold" {...props} />
   ),
   a: CustomLink,
-  code: ({ children, ...props }: ComponentPropsWithoutRef<'code'>) => {
-    const codeHTML = highlight(children as string);
+  code: ({ children, className, ...props }: ComponentPropsWithoutRef<'code'>) => {
+  // Inline code typically doesn't have a className with language info
+  // and usually contains simple text without newlines
+  const isInline = !className && typeof children === 'string' && !children.includes('\n');
+  
+  if (isInline) {
     return (
-    <div className="relative group">
-      <pre className="overflow-x-auto">
-        <CopyButton
-          codeSnippet={children as string}
-        />
-        <code
-          className="block pl-12 p-4"
-          dangerouslySetInnerHTML={{ __html: codeHTML }}
-          {...props}
-        />
-      </pre>
-    </div>
+      <code className="px-1 py-0.5 rounded bg-gray-100 dark:bg-zinc-800 text-sm" {...props}>
+        {children}
+      </code>
+    );
+  }
+  
+  const codeHTML = highlight(children as string);
+  return (
+    <pre className="relative group overflow-x-auto">
+      <CopyButton codeSnippet={children as string} />
+      <code
+        className="block pl-12 p-4"
+        dangerouslySetInnerHTML={{ __html: codeHTML }}
+        {...props}
+      />
+    </pre>
   );
-  },
+},
   Image: RoundedImage,
   blockquote: (props: BlockquoteProps) => (
     <blockquote

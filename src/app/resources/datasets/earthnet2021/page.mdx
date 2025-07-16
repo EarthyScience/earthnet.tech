@@ -1,0 +1,694 @@
+
+# EarthNet2021
+
+EarthNet2021 is a dataset and challenge for the task of Earth surface forecasting.
+
+We describe Earth surface forecasting in detail [here](/en21/ch-task/).
+
+There are four main resources for you to get started in Earth surface forecasting:
+
+1. Download the [EarthNet2021 dataset](/en21/ds-download/).
+2. Use the [EarthNet2021 toolkit](/en21/tk-overview/) for downloading, evaluating, data handling and plotting.
+3. Leverage the [EarthNet2021 model intercomparison suite](/en21/mis-installation/) for analyzing the strengths and weaknesses of several modeling approaches.
+4. Participate in the [EarthNet2021 challenge](/en21/ch-rules/).
+
+# Installation
+
+## Installing EarthNet2021 Toolkit
+
+Run
+```shell
+pip install earthnet
+```
+
+For further ways see [here](/en21/tk-overview/).
+
+## Downloading EarthNet2021 Dataset
+
+In `python` run
+
+```python
+import earthnet as en
+
+en.Downloader.get(path/to/download/to, splits)
+```
+
+For further ways see [here](/en21/ds-download/).
+
+## Installing EarthNet2021 Model Intercomparison Suite
+
+See [here](/en21/mis-installation/).
+
+
+# Dataset
+
+## Download
+
+The EarthNet2021 dataset is free to download and no registration is required. There is 2 ways to download the dataset.
+
+**Note:** We recommend at least **600GB** of free disk space before starting the download of EarthNet2021. 
+
+## With EarthNet2021 toolkit (Recommended)
+
+We recommend downloading the dataset with the [EarthNet2021 toolkit](/en21/tk-download/).
+
+1. Install the EarthNet2021 toolkit `pip install earthnet` (see [here](/en21/tk-overview))
+2. Run in `python`:
+  
+```python
+import earthnet as en
+
+en.Downloader.get(path/to/download/to, splits)
+```
+
+Here, `splits` specifies what parts of earthnet to download:
+  - `"all"` Download the whole dataset.
+  - `"train"`Download just the training dataset.
+  - `["train","iid"]`Download just training and iid test set.
+  
+For more options see [here](/en21/tk-download/)
+
+## Direct download links
+
+We host the EarthNet2021 dataset as many gzipped tarballs, find the splits here:
+  - [Download training data](https://owncloud.gwdg.de/index.php/s/7ZvOGBEXVXFBHgO)
+  - [Download IID test data](https://owncloud.gwdg.de/index.php/s/rhMvwZylorD6riJ)
+  - [Download OOD test data](https://owncloud.gwdg.de/index.php/s/rhMvwZylorD6riJ)
+  - [Download Extreme event test data](https://owncloud.gwdg.de/index.php/s/8EZDLyzmEw0Qls1)
+  - [Download Seasonal cycle test data](https://owncloud.gwdg.de/index.php/s/BkFoMR4ZRN459b4)
+
+## Structure
+
+Nothing clever here 😉. Every sample is stored as a compressed numpy array .npz. File structure follows `<split_name>/<tile_name>/<cube_name.npz>`
+
+```bash
+EarthNet2021
+├── train           # training set of the EarthNet2021 challenge
+|  ├── 29SND        # Sentinel 2 tile with samples at lon 29, lat S, subquadrant ND
+|  |  ├── 29SND_2017...124.npz 	# First training sample, name cubename.npz
+|  |  └── ...
+|  ├── 29SPC        # there is 85 tiles in the train set
+|  └── ...          # with 23904 .npz train samples in total
+├── iid_test_split  # main track testing samples
+|  ├── context      # input data ("context") for models
+|  |  └── 29SND       
+|  |  |   └── context_29SND_....npz # context cube, name: context_cubename.npz
+|  |  └── ...
+|  └── target       # target/output data for models
+|     ├── 29SND     # tiles containing iid_test samples.
+|     |   └── target_29SND_....npz  # context cube, name: target_cubename.npz
+|     └── ...       # there is 4219 iid_test samples in total
+├── ood_test_split  # robustness track testing samples
+|  ├── context     	
+|  └── target      # there is 4214 ood_test samples in total
+├── extreme_test_split # extreme weather testing samples
+|  ├── context     	
+|  └── target      # there is 4000 extreme_test samples in total
+└── seasonal_test_split # seasonal testing samples
+   ├── context     	
+   └── target      # there is 4000 iid_test samples in total
+
+```
+
+**ProTip:** Each cubename has format `tile_startyear_startmonth_startday_endyear_endmonth_endday_hrxmin_hrxmax_hrymin_hrymax_mesoxmin_mesoxmax_mesoymin_mesoymax`. So contains the exact spatiotemporal footprint of the particular sample.
+
+## Specifications
+
+
+The EarthNet2021 samples, so-called minicubes, are saved as compressed `numpy`arrays, so analysis-ready for usage in `python`. In the following we describe what exactly is contained in each minicube.
+
+## Accessing minicube
+
+The next example shows how to access the data in one minicube `example.npz`:
+
+```python
+import numpy as np
+
+# Loading File
+sample = np.load("example.npz")
+
+# Accessing high-resolution dynamic variables (the Sentinel 2 bands)
+hrd = sample["highresdynamic"]  
+imgs = hrd[:,:,:4,:] # B, G, R, NIR channels
+msks = hrd[:,:,-1,:] # EarthNet2021 binary quality mask
+
+# Accessing mesoscale dynamic variables (the E-OBS weather data)
+md = sample["mesodynamic"]
+
+# Accessing high-resolution and mesoscale static variables (the EUDEM digital elevation model)
+hrs = sample["highresstatic"]
+ms = sample["mesostatic"]
+```
+
+## Highresdynamic
+
+The variables `"highresdynamic"` have:
+  - axes (height, width, channels, time)
+  - dimension (128, 128, c, t)
+    - t is the 5-daily time
+    - Train c = 7, t = 30
+    - Test c = 5
+      - context t = 10 / 20 / 70
+      - target t = 20 / 40 / 140
+  - Channels:
+    - Train (Blue, Green, Red, Near-Infrared, Sen2Cor Cloud Mask, ESA Scene Classification, EarthNet2021 Data Quality Mask)
+    - Test (Blue, Green, Red, Near-Infrared, EarthNet2021 Data Quality Mask)
+  - Units:
+    - B, G, R, NIR (B02, B03, B04, B8A): 0 - 2 reflectance, NaN if not available.
+    - Sen2Cor Cloud Mask (CLD): 0-100 cloud probability
+    - ESA Scene Classification (SCL): 0-11 categories (see [here](https://docs.sentinel-hub.com/api/latest/data/sentinel-2-l2a/))
+    - EarthNet2021 data quality mask: `{0,1}` binary mask, 0 if good quality, 1 if bad quality.
+
+**ProTip:** Preprocess images by `imgs[imgs < 0] = 0`, `imgs[imgs > 1] = 1`, and `imgs[np.isnan(imgs)] = 0`.
+
+## Mesodynamic
+
+The variables `"mesodynamic"` have:
+  - axes (height, width, channels, time)
+  - dimension (80, 80, 5, t)
+    - t is the daily time, `md[:,:,:,4]` fits the sentinel 2 date `hrd[:,:,:,0]`.
+    - Train t = 30
+    - Test context t = 150 / 300 / 1050, target t = 0
+  - Channels:
+    - Precipitation (RR), Sea pressure (PP), Mean temperature (TG), Minimum temperature (TN), Maximum temperature (TX)
+    - for more see [here](https://www.ecad.eu/dailydata/datadictionaryelement.php)
+  - Units:
+    - All data has been rescaled to lay between 0 and 1, transformation rules:
+      - Temperatur (°C) = 5000*(2*temp - 1)
+      - Rain (mm) = 50 * rain
+      - Pressure (hPa) = 200 * pressure + 900
+
+**ProTip:** Missing data in the E-OBS variables is visible by those pixels where PP = 0. Note this information does not go into the high-resolution data quality mask.
+
+## Static
+
+The static variable has:
+  - axes (height, width, channels)
+  - dimension (h, w, 1)
+    - `"highresstatic"`has h = w = 128
+    - `"mesostatic"`has h = w = 80
+  - Channels:
+    - EU-DEM, see [here](https://www.eea.europa.eu/data-and-maps/data/copernicus-land-monitoring-service-eu-dem)
+  - Units:
+    - Data has been rescaled to lay between 0 and 1, transformation rule:
+      - DEM (m) = 2000 * (2*dem - 1)
+
+
+# Toolkit
+
+
+The EarthNet2021 toolkit offers tools for
+  1. Downloading EarthNet2021
+  2. Calculating EarthNetScore for Evaluation of Models
+  3. Handling data multicubes
+  4. Plotting data multicubes
+
+## Installation
+
+### PyPI
+Install the EarthNet2021 toolkit by
+
+```shell
+pip install earthnet
+```
+
+### Manual installation
+Get the EarthNet2021 toolkit from our github repository:
+
+```shell
+wget https://github.com/earthnet2021/earthnet-toolkit.git
+cd earthnet-toolkit
+pip install .
+```
+
+## Download
+
+
+## Downloading EarthNet2021
+
+The key function for downloading EarthNet2021 is a class method that downloads, checks SHA-hashes and unpacks the Dataset into a desired folder.
+
+Ensure you have enough free disk space! We recommend 1TB.
+
+```python
+import earthnet as en
+en.Downloader.get(data_dir, splits)
+```
+
+Where  `data_dir` is the directory where EarthNet2021 shall be saved and `splits` is `"all"`or a subset of `["train","iid","ood","extreme","seasonal"]`.
+
+
+Alternatively:
+
+```shell
+cd earthnet-toolkit/earthnet/
+python download.py -h
+python download.py "Path/To/Download/To" "all"
+```
+For using in the commandline.
+
+## API
+
+### earthnet.download module
+
+
+### class earthnet.download.DownloadProgressBar(iterable=None, desc=None, total=None, leave=True, file=None, ncols=None, mininterval=0.1, maxinterval=10.0, miniters=None, ascii=None, disable=False, unit='it', unit_scale=False, dynamic_ncols=False, smoothing=0.3, bar_format=None, initial=0, position=None, postfix=None, unit_divisor=1000, write_bytes=None, lock_args=None, gui=False, \*\*kwargs)
+Bases: `tqdm.std.tqdm`
+
+
+#### update_to(b=1, bsize=1, tsize=None)
+
+### class earthnet.download.Downloader(data_dir: str)
+Bases: `object`
+
+Downloader Class for EarthNet2021
+
+
+#### \__init__(data_dir: str)
+Initialize Downloader Class
+
+Args:
+
+    data_dir (str): The directory where the data shall be saved in, we recommend data/dataset/
+
+
+#### classmethod get(data_dir: str, splits: Union[str, Sequence[str]], overwrite: bool = False, delete: bool = True)
+Download the EarthNet2021 Dataset
+
+Before downloading, ensure that you have enough free disk space. We recommend 1 TB.
+
+Specify the directory data_dir, where it should be saved. Then choose, which of the splits you want to download.
+All available splits: [“train”,”iid”,”ood”,”extreme”,”seasonal”]
+You can either give “all” to splits or a List of splits, for example [“train”,”iid”].
+
+Args:
+
+    data_dir (str): The directory where the data shall be saved in, we recommend data/dataset/
+    splits (Sequence[str]): Either “all” or a subset of [“train”,”iid”,”ood”,”extreme”,”seasonal”]. This determines the splits that are downloaded.
+    overwrite (bool, optional): If True, overwrites an existing gzipped tarball by downloading it again. Defaults to False.
+    delete (bool, optional): If True, deletes the downloaded tarball after unpacking it. Defaults to True.
+
+
+### earthnet.download.get_sha_of_file(file: str, buf_size: int = 104857600)
+
+
+## EarthNetScore
+
+
+## Calculating EarthNetScore
+
+EarthNetScore is implemented leveraging multiprocessing. With a class method, it can be computed over (possibly multiple) predictions of one test set.
+
+Save your predictions for one test set in one folder in one of the following ways:
+`{pred_dir/tile/cubename.npz, pred_dir/tile/ensemblenumber_cubename.npz}`
+Then use the Path/To/Download/To/TestSet as the targets.
+
+Then use the EarthNetScore:
+
+```python
+import earthnet as en
+en.EarthNetScore.get_ENS(Path/to/predictions, Path/to/targets, data_output_file = Path/to/data.json, ens_output_file = Path/to/ens.json)
+```
+
+You will find the computed EarthNetScore in `Path/to/ens.json`.
+
+**ProTip:** You can find further terms computed, such as subscores per prediction, in `Path/to/data.json`.
+
+
+## API
+
+### earthnet.parallel_score module
+
+EarthNetScore in parallel.
+
+
+### class earthnet.parallel_score.CubeCalculator()
+Bases: `object`
+
+Loads single cube and calculates subscores for EarthNetScore
+
+Example:
+
+```python
+>>> scores = CubeCalculator.get_scores({"pred_filepath": Path/to/pred.npz, "targ_filepath": Path/to/targ.npz})
+```
+
+
+#### classmethod EMD(preds: numpy.ndarray, targs: numpy.ndarray, masks: numpy.ndarray)
+Earth mover distance score
+
+The earth mover distance (w1 metric) is computed between target and predicted pixelwise NDVI timeseries value distributions. For the target distributions, only non-masked values are considered. Scaled by a scaling factor such that a distance the size of a 99.7% confidence interval of the variance of the pixelwise centered NDVI timeseries is scaled to 0.9 (such that the ols-score becomes 0.1). The emd-score is 1-mean(emd), it is scaled from 0 (worst) to 1 (best).
+
+Args:
+
+    preds (np.ndarray): NDVI Predictions, shape h,w,1,t
+    targs (np.ndarray): NDVI Targets, shape h,w,1,t
+    masks (np.ndarray): NDVI Masks, shape h,w,1,t, 1 if non-masked, else 0
+
+Returns:
+
+    Tuple[float, dict]: emd-score, debugging information
+
+
+#### static MAD(preds: numpy.ndarray, targs: numpy.ndarray, masks: numpy.ndarray)
+Median absolute deviation score
+
+Median absolute deviation between non-masked target and predicted pixels. Scaled by a scaling factor such that a distance the size of a 99.7% confidence interval of the variance of the pixelwise centered timeseries is scaled to 0.9 (such that the mad-score becomes 0.1). The mad-score is 1-MAD, it is scaled from 0 (worst) to 1 (best).
+
+Args:
+
+    preds (np.ndarray): Predictions, shape h,w,c,t
+    targs (np.ndarray): Targets, shape h,w,c,t
+    masks (np.ndarray): Masks, shape h,w,c,t, 1 if non-masked, else 0
+
+Returns:
+
+    Tuple[float, dict]: mad-score, debugging information
+
+
+#### static OLS(preds: numpy.ndarray, targs: numpy.ndarray, masks: numpy.ndarray)
+Ordinary least squares slope deviation score
+
+Mean absolute difference between ordinary least squares slopes of target and predicted pixelwise NDVI timeseries. Target slopes are calculated over non-masked values. Predicted slopes are calculated for all values between the first and last non-masked value of a given timeseries. Scaled by a scaling factor such that a distance the size of a 99.7% confidence interval of the variance of the pixelwise centered NDVI timeseries is scaled to 0.9 (such that the ols-score becomes 0.1). If the timeseries is longer than 40 steps, it is split up into parts of length 20. The ols-score is 1-mean(abs(b_targ - b_pred)), it is scaled from 0 (worst) to 1 (best).
+
+Args:
+
+    preds (np.ndarray): NDVI Predictions, shape h,w,1,t
+    targs (np.ndarray): NDVI Targets, shape h,w,1,t
+    masks (np.ndarray): NDVI Masks, shape h,w,1,t, 1 if non-masked, else 0
+
+Returns:
+
+    Tuple[float, dict]: ols-score, debugging information
+
+
+#### static SSIM(preds: numpy.ndarray, targs: numpy.ndarray, masks: numpy.ndarray)
+Structural similarity index score
+
+Structural similarity between predicted and target cube computed for all channels and frames individually if the given target is less than 30% masked. Scaled by a scaling factor such that a mean SSIM of 0.8 is scaled to a ssim-score of 0.1. The ssim-score is mean(ssim), it is scaled from 0 (worst) to 1 (best).
+
+Args:
+
+    preds (np.ndarray): Predictions, shape h,w,c,t
+    targs (np.ndarray): Targets, shape h,w,c,t
+    masks (np.ndarray): Masks, shape h,w,c,t, 1 if non-masked, else 0
+
+Returns:
+
+    Tuple[float, dict]: ssim-score, debugging information
+
+
+#### static compute_w1(datarow: numpy.ndarray)
+Computing w1 distance for np.apply_along_axis
+
+Args:
+
+    datarow (np.ndarray): 1-dimensional array that can be split into three parts of equal size, these are in order: predictions, targets and masks for a single pixel and channel through time.
+
+Returns:
+
+    Union[np.ndarray, None]: w1 distance between prediction and target, if not completely masked, else None.
+
+
+#### classmethod get_scores(filepaths: dict)
+Get all subscores for a given cube
+
+Args:
+
+    filepaths (dict): Has keys “pred_filepath”, “targ_filepath” with respective paths.
+
+Returns:
+
+    dict: subscores and debugging info for the input cube
+
+
+#### static load_file(pred_filepath: pathlib.Path, targ_filepath: pathlib.Path)
+Load a single target cube and a matching prediction
+
+Args:
+
+    pred_filepath (Path): Path to predicted cube
+    targ_filepath (Path): Path to target cube
+
+Returns:
+
+    Sequence[np.ndarray]: preds, targs, masks, ndvi_preds, ndvi_targs, ndvi_masks
+
+
+### class earthnet.parallel_score.EarthNetScore(pred_dir: str, targ_dir: str)
+Bases: `object`
+
+EarthNetScore class, fast computation using multiprocessing
+
+Example:
+
+> Direct computation
+> >>> EarthNetScore.get_ENS(Path/to/predictions, Path/to/targets, data_output_file = Path/to/data.json, ens_output_file = Path/to/ens.json)
+
+> More control (for further plotting)
+> >>> ENS = EarthNetScore(Path/to/predictions, Path/to/targets)
+> >>> data = ENS.compute_scores()
+> >>> ens = ENS.summarize()
+
+
+#### \__init__(pred_dir: str, targ_dir: str)
+Initialize EarthNetScore
+```
+Args:
+
+    pred_dir (str): Directory with predictions, format is one of {pred_dir/tile/cubename.npz, pred_dir/tile/experiment_cubename.npz}
+    targ_dir (str): Directory with targets, format is one of {targ_dir/target/tile/target_cubename.npz, targ_dir/target/tile/cubename.npz, targ_dir/tile/target_cubename.npz, targ_dir/tile/cubename.npz}
+```
+#### compute_scores(n_workers: Optional[int] = -1)
+Compute subscores for all cubepaths
+```
+Args:
+
+    n_workers (Optional[int], optional): Number of workers, if -1 uses all CPUs, if 0 uses no multiprocessing. Defaults to -1.
+
+Returns:
+
+    dict: data of format {cubename: score_dict}
+```
+
+#### classmethod get_ENS(pred_dir: str, targ_dir: str, n_workers: Optional[int] = -1, data_output_file: Optional[str] = None, ens_output_file: Optional[str] = None)
+Method to directly compute EarthNetScore
+```
+Args:
+
+    pred_dir (str): Directory with predictions, format is one of {pred_dir/tile/cubename.npz, pred_dir/tile/experiment_cubename.npz}
+    targ_dir (str): Directory with targets, format is one of {targ_dir/target/tile/target_cubename.npz, targ_dir/target/tile/cubename.npz, targ_dir/tile/target_cubename.npz, targ_dir/tile/cubename.npz}
+    n_workers (Optional[int], optional): Number of workers, if -1 uses all CPUs, if 0 uses no multiprocessing. Defaults to -1.
+    data_output_file (Optional[str], optional): Output filepath for subscores and debugging information, recommended to end with .json. Defaults to None.
+    ens_output_file (Optional[str], optional): Output filepath for EarthNetScore, recommended to end with .json. Defaults to None.
+```
+
+#### get_paths(pred_dir: str, targ_dir: str)
+Match paths of target cubes with predicted cubes
+
+Each target cube gets 1 or more predicted cubes.
+```
+Args:
+
+    pred_dir (str): Directory with predictions, format is one of {pred_dir/tile/cubename.npz, pred_dir/tile/experiment_cubename.npz}
+    targ_dir (str): Directory with targets, format is one of {targ_dir/target/tile/target_cubename.npz, targ_dir/target/tile/cubename.npz, targ_dir/tile/target_cubename.npz, targ_dir/tile/cubename.npz}
+```
+
+#### save_scores(output_file: str)
+Save all subscores and debugging info as JSON
+
+Args:
+
+    output_file (str): Output filepath, recommended to end with .json
+
+
+#### summarize(output_file: Optional[str] = None)
+Calculate EarthNetScore from subscores and optionally save to file as JSON
+
+Args:
+
+    output_file (Optional[str], optional): If not None, saves EarthNetScore to this path, recommended to end with .json. Defaults to None.
+
+Returns:
+
+    Tuple[float, float, float, float, float]: ens, mad, ols, emd, ssim
+
+
+
+# Challenge
+
+
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/sumLCeZ92Hk" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+
+Climate change amplifies extreme weather events. Their impacts vary heterogeneously at the local scale. Thus forecasting localized climate impacts is highly relevant. Downstream applications include crop yield prediction, forest health assessments, biodiversity monitoring, coastline management or more general the estimation of vegetation state.
+
+## A concrete example
+
+![The 2018 summer heat wave impacted quite heterogenously on fields close to a river or depending on slope over the UK.](/assets/images/task-example-uk2019.png "South Dawns National Park near Seaford, UK. Satellite imagery from Sentinelhub.")
+
+The 2018 summer heat wave, as can be seen, provides an example of different areas within one region being impacted very differently by extreme weather. This might be due to factors such as a nearby river or whether a slope is north- or south-facing. But obviously complex relationships come into play here.
+
+## The Task
+
+We define Earth surface forecasting as the task of guided video prediction of satellite imagery for forecasting localized weather impacts. More specifically, strong guidance with seasonal weather projections is leveraged. Models shall take past satellite imagery, topography and weather variables, the latter from past and future, and predict future satellite imagery.
+
+
+## Tracks 
+
+For all tracks, models are allowed to use the EarthNet2021 training set for model training in *any way useful for them*.
+{/* <figure class="half">
+    <a href="{{ site.baseurl }}/assets/images/guide_cube_spatial_distribution.png"><img src="{{ site.baseurl }}/assets/images/guide_cube_spatial_distribution.png"></a>
+    <figcaption>Spatial distribution of train and test sets.</figcaption>
+</figure> */}
+
+### Main track (IID)
+The independent and identically distributed test set (`iid_test`) is the **main track** of the EarthNet2021 challenge. The `iid_test` assumes that in production models will have access to all prior global data, thus the test set has the same underlying distribution as the training set.
+
+
+### Robustness Track (OOD)
+
+The out-of-domain test set (`ood_test`) is the **robustness track** of the EarthNet2021 challenge. This spatial out-of-domain setting is particularly interesting as a mean to measure the generalization capability of the models. For this track samples in the test set are drawn from a distribution of geolocations different to that of the training set, else it is set up exactly like the main track.
+
+
+### Extreme Summer Track
+
+The extreme summer test set (`extreme_test`) contains samples from the **extreme summer** 2018 in northern Germany, a known harsh drought. Accurate downscaling of an extreme heat event and it's effects to vegetation will greatly benefit resilience strategies. 
+Samples are larger, with 4 months of context (20 imagery frames) starting in February and 6 months (40 frames) starting from June to evaluate predictions. For these locations there are some samples dated before 2018 in the training set. 
+
+
+
+### Seasonal Cycle Track
+
+The full seasonal cycle test set (`seasonal_test`) covers **multiple years** of observations; and hence, includes vegetation's full seasonal cycle. This track in line with the recently rising interest in seasonal forecasts within physical climate models. This test track will provide useful insight to determine how far into the future predictions are accurate and to design the test tracks for future editions. 
+It contains multicubes from the spatial distribution of ood_test, but this time each sample has 1 year (70 frames) of context frames and 2 years (140 frames) to evaluate predictions. While the main target EarthNet2021 is to evaluate near-future forecasting, models are likely able to predict longer horizons. 
+
+## Submit
+
+Scores can be submitted to the leaderboard by directly editing and creating a pull request to `en21/pages/leaderboard.md`. New entry to the leaderboard must link to either of these: a technical document describing the model used, a publication or the source code of the model that generated the results. If there are major reasons why the model must remain unknown to the public but still the group want to entry to the leaderboard please contact the [EN-Team](/about/)
+
+## Leaderboard
+
+## Main (IID)
+
+| **Rank** |      **Model Name**      | **Group Name** |   **MAD**  |   **OLS**  |   **EMD**  |  **SSIM**  | **EarthNetScore** |
+|:----:|:--------------------:|:----------:|:------:|:------:|:------:|:------:|:-------------:|
+| 1    | [Earthformer](https://openreview.net/forum?id=lzZstLVGVGW) | [Earthformer-Team](https://github.com/amazon-science/earth-forecasting-transformer) | 0.2749 | 0.3619 | 0.2701 | 0.6350 | 0.3425 |
+| 2    | [Diaconu ConvLSTM](https://openaccess.thecvf.com/content/CVPR2022W/EarthVision/papers/Diaconu_Understanding_the_Role_of_Weather_Data_for_Earth_Surface_Forecasting_CVPRW_2022_paper.pdf) | [TUM](https://www.asg.ed.tum.de/en/sipeo/team/codrut-andrei-diaconu/)     | 0.2638 | 0.3513 | 0.2623 |     0.5565  |  0.3266   |
+| 3    | [SGConvLSTM](https://www.biorxiv.org/content/10.1101/2022.08.16.504173v1.full.pdf) | [ETH Zurich](https://usys.ethz.ch/en/people/profile.MTUxNjQ5.TGlzdC8yODUyLDMyMDE5NzIyMg==.html)     | 0.2589 | 0.3456 | 0.2533 |     0.5292    | 0.3176 |
+| 4    | [SGEDConvLSTM](https://www.biorxiv.org/content/10.1101/2022.08.16.504173v1.full.pdf) | [ETH Zurich](https://usys.ethz.ch/en/people/profile.MTUxNjQ5.TGlzdC8yODUyLDMyMDE5NzIyMg==.html)     | 0.2580 | 0.3440 | 0.2532 | 0.5237 |     0.3164    |
+| 5    | [Channel-U-Net Baseline](https://arxiv.org/pdf/2104.10066.pdf) | [EN-Team](/about/)     | 0.2482 | 0.3381 | 0.2336 |     0.3973  | 0.2902   |
+| 6    | [Arcon Baseline](https://arxiv.org/pdf/2104.10066.pdf) | [EN-Team](/about/)     | 0.2414 | 0.3216 | 0.2258 |     0.3863    | 0.2803 |
+| 7    | [Persistence Baseline](https://arxiv.org/pdf/2104.10066.pdf) | [EN-Team](/about/)     | 0.2315 | 0.3239 | 0.2099 | 0.3265 |     0.2625    |
+| 8    |                      |            |        |        |        |        |               |
+| 9    |                      |            |        |        |        |        |               |
+
+
+
+
+## Robustness (OOD)
+
+| **Rank** |      **Model Name**      | **Group Name** |   **MAD**  |   **OLS**  |   **EMD**  |  **SSIM**  | **EarthNetScore** |
+|:----:|:--------------------:|:----------:|:------:|:------:|:------:|:------:|:-------------:|
+| 1    | [Earthformer](https://openreview.net/forum?id=lzZstLVGVGW) | [Earthformer-Team](https://github.com/amazon-science/earth-forecasting-transformer) | 0.2533 | 0.3581 | 0.2732 | 0.5270 | 0.3252 |
+| 2    | [Diaconu ConvLSTM](https://openaccess.thecvf.com/content/CVPR2022W/EarthVision/papers/Diaconu_Understanding_the_Role_of_Weather_Data_for_Earth_Surface_Forecasting_CVPRW_2022_paper.pdf) | [TUM](https://www.asg.ed.tum.de/en/sipeo/team/codrut-andrei-diaconu/)     | 0.2541 | 0.3522 | 0.2660 |     0.5125  |   0.3204   |
+| 3    | [SGConvLSTM](https://www.biorxiv.org/content/10.1101/2022.08.16.504173v1.full.pdf) | [ETH Zurich](https://usys.ethz.ch/en/people/profile.MTUxNjQ5.TGlzdC8yODUyLDMyMDE5NzIyMg==.html)     | 0.2512 | 0.3481 | 0.2597 |     0.4977    | 0.3146 |
+| 4    | [SGEDConvLSTM](https://www.biorxiv.org/content/10.1101/2022.08.16.504173v1.full.pdf) | [ETH Zurich](https://usys.ethz.ch/en/people/profile.MTUxNjQ5.TGlzdC8yODUyLDMyMDE5NzIyMg==.html)     | 0.2497 | 0.3450 | 0.2587 | 0.4887 |     0.3121    |
+| 5    | [Channel-U-Net Baseline](https://arxiv.org/pdf/2104.10066.pdf) | [EN-Team](/about/)     | 0.2402 | 0.3390 | 0.2371 | 0.3721 |     0.2854    |
+| 6    | [Arcon Baseline](https://arxiv.org/pdf/2104.10066.pdf) | [EN-Team](/about/)     | 0.2314 | 0.3088 | 0.2177 | 0.3432 |     0.2655    |
+| 7    | [Persistence Baseline](https://arxiv.org/pdf/2104.10066.pdf) | [EN-Team](/about/)     | 0.2248 | 0.3236 | 0.2123 | 0.3112 |     0.2587    |
+| 8    |                      |            |        |        |        |        |               |
+| 9    |                      |            |        |        |        |        |               |
+
+
+
+## Extreme Summer
+
+| **Rank** |      **Model Name**      | **Group Name** |   **MAD**  |   **OLS**  |   **EMD**  |  **SSIM**  | **EarthNetScore** |
+|:----:|:--------------------:|:----------:|:------:|:------:|:------:|:------:|:-------------:|
+| 1    | [SGConvLSTM](https://www.biorxiv.org/content/10.1101/2022.08.16.504173v1.full.pdf) | [ETH Zurich](https://usys.ethz.ch/en/people/profile.MTUxNjQ5.TGlzdC8yODUyLDMyMDE5NzIyMg==.html)     | 0.2366 | 0.3199 | 0.2279 |     0.3497    | 0.2740 |
+| 2    | [SGEDConvLSTM](https://www.biorxiv.org/content/10.1101/2022.08.16.504173v1.full.pdf) | [ETH Zurich](https://usys.ethz.ch/en/people/profile.MTUxNjQ5.TGlzdC8yODUyLDMyMDE5NzIyMg==.html)     | 0.2304 | 0.3164 | 0.2186 | 0.2993 |     0.2595    |
+| 3    | [Channel-U-Net Baseline](https://arxiv.org/pdf/2104.10066.pdf) | [EN-Team](/about/)     | 0.2286 | 0.2973 | 0.2065 | 0.2306 |     0.2364    |
+| 4    | [Arcon Baseline](https://arxiv.org/pdf/2104.10066.pdf) | [EN-Team](/about/)     | 0.2243 | 0.2753 | 0.1975 | 0.2084 |     0.2215    |
+| 5    | [Diaconu ConvLSTM](https://openaccess.thecvf.com/content/CVPR2022W/EarthVision/papers/Diaconu_Understanding_the_Role_of_Weather_Data_for_Earth_Surface_Forecasting_CVPRW_2022_paper.pdf) | [TUM](https://www.asg.ed.tum.de/en/sipeo/team/codrut-andrei-diaconu/)     | 0.2137 | 0.2906 | 0.1879 |     0.1904  |   0.2140   |
+| 6    | [Persistence Baseline](https://arxiv.org/pdf/2104.10066.pdf) | [EN-Team](/about/)     | 0.2158 | 0.2806 | 0.1614 | 0.1605 |     0.1939    |
+| 7    |                      |            |        |        |        |        |               |
+| 8    |                      |            |        |        |        |        |               |
+| 9    |                      |            |        |        |        |        |               |
+
+
+
+
+## Seasonal Cycle
+
+| **Rank** |      **Model Name**      | **Group Name** |   **MAD**  |   **OLS**  |   **EMD**  |  **SSIM**  | **EarthNetScore** |
+|:----:|:--------------------:|:----------:|:------:|:------:|:------:|:------:|:-------------:|
+| 1    | [Persistence Baseline](https://arxiv.org/pdf/2104.10066.pdf) | [EN-Team](/about/)     | 0.2329 | 0.3848 | 0.2034 | 0.3184 |     0.2676    |
+| 2    | [Diaconu ConvLSTM](https://openaccess.thecvf.com/content/CVPR2022W/EarthVision/papers/Diaconu_Understanding_the_Role_of_Weather_Data_for_Earth_Surface_Forecasting_CVPRW_2022_paper.pdf) | [TUM](https://www.asg.ed.tum.de/en/sipeo/team/codrut-andrei-diaconu/)     | 0.2146 | 0.3778 | 0.2003 |     0.1685  |  0.2193   |
+| 3    | [SGConvLSTM](https://www.biorxiv.org/content/10.1101/2022.08.16.504173v1.full.pdf) | [ETH Zurich](https://usys.ethz.ch/en/people/profile.MTUxNjQ5.TGlzdC8yODUyLDMyMDE5NzIyMg==.html)     | 0.2207 | 0.3756 | 0.1723 |     0.1817    | 0.2162 |
+| 4    | [Channel-U-Net Baseline](https://arxiv.org/pdf/2104.10066.pdf) | [EN-Team](/about/)     | 0.2169 | 0.3811 | 0.1903 | 0.1255 |     0.1955    |
+| 5    | [SGEDConvLSTM](https://www.biorxiv.org/content/10.1101/2022.08.16.504173v1.full.pdf) | [ETH Zurich](https://usys.ethz.ch/en/people/profile.MTUxNjQ5.TGlzdC8yODUyLDMyMDE5NzIyMg==.html)     | 0.2056 | 0.3585 | 0.1543 | 0.1218 |     0.1790    |
+| 6    | [Arcon Baseline](https://arxiv.org/pdf/2104.10066.pdf) | [EN-Team](/about/)     | 0.2014 | 0.3788 | 0.1787 | 0.0834 |     0.1587    |
+| 7    |                      |            |        |        |        |        |               |
+| 8    |                      |            |        |        |        |        |               |
+| 9    |                      |            |        |        |        |        |               |
+
+
+# Cite Us
+
+
+We are very pleased to present EarthNet to the community. Please cite our work using one of the following methods
+
+### Bibtex
+```latex
+@InProceedings{Requena_2021_CVPR_Workshops,
+author = {Requena-Mesa, Christian and Benson, Vitus and Reichstein, Markus and Runge, Jakob and Denzler, Joachim},
+title = {EarthNet2021: A large-scale dataset and challenge for Earth surface forecasting as a guided video prediction task},
+booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops},
+month = {June},
+year = {2021}
+}
+```
+### Other
+
+Christian Requena-Mesa, Vitus Benson, Markus Reichstein, Jakob Runge and Joachim Denzler. EarthNet2021: A large-scale dataset and challenge for Earth surface forecasting as a guided video prediction task. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops, 2021.
+
+
+# License
+
+
+EarthNet2021 is shared under **CC-BY-NC-SA 4.0**.
+You can understand our license in [_plain english_](https://tldrlegal.com/license/creative-commons-attribution-noncommercial-sharealike-4.0-international-(cc-by-nc-sa-4.0))
+
+
+
+CC BY-NC-SA 4.0 License
+
+Copyright (c) 2020 Max-Planck-Institute for Biogeochemistry, Vitus Benson, Christian-Requena-Mesa, Markus Reichstein
+
+This data and code is licensed under CC BY-NC-SA 4.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/4.0
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+This Dataset uses E-OBS observational data (2016-2020).
+
+We acknowledge the E-OBS dataset and the data providers in the ECA&D project (https://www.ecad.eu). Cornes, R., G. van der Schrier, E.J.M. van den Besselaar, and P.D. Jones. 2018: An Ensemble Version of the E-OBS Temperature and Precipitation Datasets, J. Geophys. Res. Atmos., 123. doi:10.1029/2017JD028200
+
+
+This Dataset uses Copernicus Sentinel data (2016-2020).
+
+The access and use of Copernicus Sentinel Data and Service Information is regulated under EU law.1 In particular, the law provides that users shall have a free, full and open access to Copernicus Sentinel Data2 and Service Information without any express or implied warranty, including as regards quality and suitability for any purpose. 3 EU law grants free access to Copernicus Sentinel Data and Service Information for the purpose of the following use in so far as it is lawful4 : (a) reproduction; (b) distribution; (c) communication to the public; (d) adaptation, modification and combination with other data and information; (e) any combination of points (a) to (d). EU law allows for specific limitations of access and use in the rare cases of security concerns, protection of third party rights or risk of service disruption. By using Sentinel Data or Service Information the user acknowledges that these conditions are applicable to him/her and that the user renounces to any claims for damages against the European Union and the providers of the said Data and Information. The scope of this waiver encompasses any dispute, including contracts and torts claims, that might be filed in court, in arbitration or in any other form of dispute settlement.
+
+
+This Dataset uses Copernicus Land Monitoring Service EU-DEM v1.1.
+
+The Copernicus programme is governed by Regulation (EU) No 377/2014 of the European Parliament and of the Council of 3 April 2014 establishing the Copernicus programme and repealing Regulation (EU) No 911/2010. Within the Copernicus programme, a portfolio of land monitoring activities has been delegated by the European Union to the EEA. The land monitoring products and services are made available through the Copernicus land portal on a principle of full, open and free access, as established by the Copernicus data and information policy Regulation (EU) No 1159/2013 of 12 July 2013.
+
+The Copernicus data and information policy is in line with the EEA policy of open and easy access to the data, information and applications derived from the activities described in its management plan.
