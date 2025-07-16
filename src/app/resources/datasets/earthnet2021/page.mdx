@@ -450,16 +450,15 @@ Example:
 
 #### \__init__(pred_dir: str, targ_dir: str)
 Initialize EarthNetScore
-
+```
 Args:
 
     pred_dir (str): Directory with predictions, format is one of {pred_dir/tile/cubename.npz, pred_dir/tile/experiment_cubename.npz}
     targ_dir (str): Directory with targets, format is one of {targ_dir/target/tile/target_cubename.npz, targ_dir/target/tile/cubename.npz, targ_dir/tile/target_cubename.npz, targ_dir/tile/cubename.npz}
-
-
+```
 #### compute_scores(n_workers: Optional[int] = -1)
 Compute subscores for all cubepaths
-
+```
 Args:
 
     n_workers (Optional[int], optional): Number of workers, if -1 uses all CPUs, if 0 uses no multiprocessing. Defaults to -1.
@@ -467,11 +466,11 @@ Args:
 Returns:
 
     dict: data of format {cubename: score_dict}
-
+```
 
 #### classmethod get_ENS(pred_dir: str, targ_dir: str, n_workers: Optional[int] = -1, data_output_file: Optional[str] = None, ens_output_file: Optional[str] = None)
 Method to directly compute EarthNetScore
-
+```
 Args:
 
     pred_dir (str): Directory with predictions, format is one of {pred_dir/tile/cubename.npz, pred_dir/tile/experiment_cubename.npz}
@@ -479,18 +478,18 @@ Args:
     n_workers (Optional[int], optional): Number of workers, if -1 uses all CPUs, if 0 uses no multiprocessing. Defaults to -1.
     data_output_file (Optional[str], optional): Output filepath for subscores and debugging information, recommended to end with .json. Defaults to None.
     ens_output_file (Optional[str], optional): Output filepath for EarthNetScore, recommended to end with .json. Defaults to None.
-
+```
 
 #### get_paths(pred_dir: str, targ_dir: str)
 Match paths of target cubes with predicted cubes
 
 Each target cube gets 1 or more predicted cubes.
-
+```
 Args:
 
     pred_dir (str): Directory with predictions, format is one of {pred_dir/tile/cubename.npz, pred_dir/tile/experiment_cubename.npz}
     targ_dir (str): Directory with targets, format is one of {targ_dir/target/tile/target_cubename.npz, targ_dir/target/tile/cubename.npz, targ_dir/tile/target_cubename.npz, targ_dir/tile/cubename.npz}
-
+```
 
 #### save_scores(output_file: str)
 Save all subscores and debugging info as JSON
@@ -535,10 +534,10 @@ We define Earth surface forecasting as the task of guided video prediction of sa
 ## Tracks 
 
 For all tracks, models are allowed to use the EarthNet2021 training set for model training in *any way useful for them*.
-<figure class="half">
+{/* <figure class="half">
     <a href="{{ site.baseurl }}/assets/images/guide_cube_spatial_distribution.png"><img src="{{ site.baseurl }}/assets/images/guide_cube_spatial_distribution.png"></a>
     <figcaption>Spatial distribution of train and test sets.</figcaption>
-</figure>
+</figure> */}
 
 ### Main track (IID)
 The independent and identically distributed test set (`iid_test`) is the **main track** of the EarthNet2021 challenge. The `iid_test` assumes that in production models will have access to all prior global data, thus the test set has the same underlying distribution as the training set.

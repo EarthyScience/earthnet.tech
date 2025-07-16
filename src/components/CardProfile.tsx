@@ -5,8 +5,11 @@ import { GiBrain } from 'react-icons/gi';
 import { MdEmail } from 'react-icons/md';
 import { 
   FaGithub, FaLinkedin, FaTwitter, FaInstagram, 
-  FaFacebook, FaGlobe, FaBluesky
+  FaFacebook, FaGlobe
 } from 'react-icons/fa';
+import {
+  FaBluesky
+} from 'react-icons/fa6';
 import ProtectedEmail from './ProtectedEmail';
 import './CardProfile.css'
 
