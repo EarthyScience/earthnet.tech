@@ -216,7 +216,6 @@ const BibliographySearch: React.FC<BibliographySearchProps> = ({ bibData }) => {
     const { type, key, fields, raw } = entry;
     const title = latexToUnicode(fields.title || 'Untitled');
     const authorsArr = formatAuthors(fields.author);
-    const authorsStr = authorsArr.join(', ');
     const year = fields.year || '';
     const journal = latexToUnicode(fields.journal || fields.booktitle || '');
     const publisher = latexToUnicode(fields.publisher || '');
