@@ -94,7 +94,7 @@ function CustomLink(props: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
 // MDX Components for direct usage
 const components = {
   wrapper: ({ children }: { children: React.ReactNode }) => (
-    <div className="max-w-6xl mx-auto px-6 mt-8 py-8 space-y-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 mt-8 py-8 space-y-8">
       {children}
     </div>
   ),
