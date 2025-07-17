@@ -86,23 +86,6 @@ month={March},
       code={https://github.com/vitusbenson/greenearthnet},
 }
 
-@article{benson.ecker_2020,
-  abbr = {AI+HADR},
-  title = {Assessing Out-of-Domain Generalization for Robust Building Damage Detection},
-  author = {Benson, Vitus and Ecker, Alexander},
-  journal = {NeurIPS Workshop on Artificial Intelligence for Humanitarian Assistance and {{Disaster Response (AI}}+HADR)},
-  month = {December},
-  year = {2020},
-  selected={false},
-  pdf={http://arxiv.org/abs/2011.10328},
-  bibtex_show={true},
-  preview = {benson_hadrai_2020.png},
-  code={https://github.com/ecker-lab/robust-bdd},
-}
-
-
-
-
 @article{benson.etal_2024,
   abbr = {ERL},
   title = {Measuring Tropical Rainforest Resilience under Non-{{Gaussian}} Disturbances},

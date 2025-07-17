@@ -1,6 +1,7 @@
 "use client"
 import { useState, useEffect, useRef, useCallback } from "react";
 import latexToUnicode from "@/utils/latexToUnicode";
+import Image from "next/image";
 
 interface BibEntry {
   type: string;
@@ -234,8 +235,33 @@ const BibliographySearch: React.FC<BibliographySearchProps> = ({ bibData }) => {
             </div>
           )}
         </div>
-        {/* Bottom: All other fields left, abbr/thumbnail right */}
-        <div className="flex flex-row gap-4 items-start">
+        {/* Responsive: All other fields left, abbr/thumbnail right (md: row, base: col) */}
+        <div className="flex flex-col md:flex-row gap-4 items-start py-2">
+          {/* left: Abbr and Thumbnail Preview only (responsive, on top for small screens) */}
+          {(abbr || previewSrc) && (
+            <div className="flex flex-col items-start justify-start min-w-[96px] max-w-[128px] gap-2 flex-shrink-0 w-full md:w-auto mb-4 md:mb-0 order-first md:order-none">
+              {abbr && (
+                <span className="inline-block bg-gray-200 text-gray-700 text-xs font-semibold px-2 py-0.5 rounded align-middle mb-1">
+                  {abbr}
+                </span>
+              )}
+              {previewSrc && (
+                <Image
+                  src={`/publication_preview${previewSrc}`}
+                  alt={abbr ? `${abbr} preview` : 'Preview'}
+                  className="rounded-lg shadow max-h-40 object-contain -mt-2"
+                  width={128}
+                  height={160}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    if (!target.src.endsWith('/publication_preview/placeholder.jpg')) {
+                      target.src = '/publication_preview/placeholder.jpg';
+                    }
+                  }}
+                />
+              )}
+            </div>
+          )}
           {/* Left: All other fields */}
           <div className="flex-1 min-w-0 flex flex-col gap-2">
             {/* Publication info */}
@@ -315,24 +341,6 @@ const BibliographySearch: React.FC<BibliographySearchProps> = ({ bibData }) => {
               Type: {type} | Key: {key}
             </div>
           </div>
-          {/* Right: Abbr and Thumbnail Preview only */}
-          {(abbr || previewSrc) && (
-            <div className="flex flex-col items-center justify-start min-w-[96px] max-w-[128px] gap-2 flex-shrink-0">
-              {abbr && (
-                <span className="inline-block bg-gray-200 text-gray-700 text-xs font-semibold px-2 py-0.5 rounded align-middle mb-1">
-                  {abbr}
-                </span>
-              )}
-              {previewSrc && (
-                <img
-                  src={previewSrc}
-                  alt={abbr ? `${abbr} preview` : 'Preview'}
-                  className="rounded-lg shadow max-h-40 object-contain"
-                  loading="lazy"
-                />
-              )}
-            </div>
-          )}
         </div>
       </li>
     );
