@@ -1,5 +1,6 @@
 "use client"
 import { useState, useEffect, useRef, useCallback } from "react";
+import latexToUnicode from "@/utils/latexToUnicode";
 
 interface BibEntry {
   type: string;
@@ -7,6 +8,7 @@ interface BibEntry {
   fields: Record<string, string>;
   year: string;
   searchText: string;
+  raw?: string; // Add raw BibTeX
 }
 
 interface BibliographySearchProps {
@@ -17,6 +19,7 @@ const BibliographySearch: React.FC<BibliographySearchProps> = ({ bibData }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredEntries, setFilteredEntries] = useState<BibEntry[]>([]);
   const [allEntries, setAllEntries] = useState<BibEntry[]>([]);
+  const [openBibtexKey, setOpenBibtexKey] = useState<string | null>(null); // Track open modal
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Parse BibTeX data
@@ -25,34 +28,80 @@ const BibliographySearch: React.FC<BibliographySearchProps> = ({ bibData }) => {
     const entryRegex = /@(\w+)\{([^,]+),\s*([\s\S]*?)\n\}/g;
     let match: RegExpExecArray | null;
 
+    // Helper to extract a field value with nested braces
+    function extractFieldValue(text: string, startIdx: number): [string, number] {
+      let value = '';
+      let braceCount = 0;
+      let i = startIdx;
+      let started = false;
+      while (i < text.length) {
+        const char = text[i];
+        if (char === '{') {
+          braceCount++;
+          started = true;
+          if (braceCount > 1) value += char;
+        } else if (char === '}') {
+          braceCount--;
+          if (braceCount === 0 && started) {
+            i++; // move past closing brace
+            break;
+          }
+          if (braceCount >= 1) value += char;
+        } else {
+          value += char;
+        }
+        i++;
+      }
+      return [value, i];
+    }
+
     while ((match = entryRegex.exec(bibText)) !== null) {
       const [, type, key, fieldsText] = match;
       const fields: Record<string, string> = {};
-      
-      // Parse fields
-      const fieldRegex = /(\w+)\s*=\s*\{([^}]*)\}/g;
-      let fieldMatch: RegExpExecArray | null;
-      
-      while ((fieldMatch = fieldRegex.exec(fieldsText)) !== null) {
-        const [, fieldName, fieldValue] = fieldMatch;
+      let i = 0;
+      while (i < fieldsText.length) {
+        // Skip whitespace and commas
+        while (i < fieldsText.length && /[\s,]/.test(fieldsText[i])) i++;
+        // Find field name
+        let nameStart = i;
+        while (i < fieldsText.length && /[\w]/.test(fieldsText[i])) i++;
+        const fieldName = fieldsText.slice(nameStart, i).trim();
+        if (!fieldName) break;
+        // Skip whitespace and '='
+        while (i < fieldsText.length && /[\s=]/.test(fieldsText[i])) i++;
+        // Field value can be in braces or quotes
+        let fieldValue = '';
+        if (fieldsText[i] === '{') {
+          const [value, nextIdx] = extractFieldValue(fieldsText, i);
+          fieldValue = value;
+          i = nextIdx;
+        } else if (fieldsText[i] === '"') {
+          i++;
+          let value = '';
+          while (i < fieldsText.length && fieldsText[i] !== '"') {
+            value += fieldsText[i++];
+          }
+          i++; // skip closing quote
+          fieldValue = value;
+        } else {
+          // Unbraced value (rare)
+          let value = '';
+          while (i < fieldsText.length && /[^,\n]/.test(fieldsText[i])) {
+            value += fieldsText[i++];
+          }
+          fieldValue = value.trim();
+        }
         fields[fieldName] = fieldValue;
       }
-
-      // Handle string values with quotes
-      const stringFieldRegex = /(\w+)\s*=\s*"([^"]*)"/g;
-      let stringMatch: RegExpExecArray | null;
-      
-      while ((stringMatch = stringFieldRegex.exec(fieldsText)) !== null) {
-        const [, fieldName, fieldValue] = stringMatch;
-        fields[fieldName] = fieldValue;
-      }
-
+      // Store the raw BibTeX for this entry
+      const raw = bibText.slice(match.index, entryRegex.lastIndex).trim();
       entries.push({
         type,
         key,
         fields,
         year: fields.year || 'Unknown',
-        searchText: `${key} ${Object.values(fields).join(' ')}`.toLowerCase()
+        searchText: `${key} ${Object.values(fields).join(' ')}`.toLowerCase(),
+        raw,
       });
     }
 
@@ -162,12 +211,12 @@ const BibliographySearch: React.FC<BibliographySearchProps> = ({ bibData }) => {
 
   // Render a single bibliography entry
   const renderEntry = (entry: BibEntry): React.ReactElement => {
-    const { type, key, fields } = entry;
-    const title = fields.title || 'Untitled';
-    const authors = formatAuthors(fields.author);
+    const { type, key, fields, raw } = entry;
+    const title = latexToUnicode(fields.title || 'Untitled');
+    const authors = latexToUnicode(formatAuthors(fields.author));
     const year = fields.year || '';
-    const journal = fields.journal || fields.booktitle || '';
-    const publisher = fields.publisher || '';
+    const journal = latexToUnicode(fields.journal || fields.booktitle || '');
+    const publisher = latexToUnicode(fields.publisher || ''); // TODO: check if this is correct
 
     return (
       <li key={key} className="mb-4 p-4 border-l-4 rounded-r-lg">
@@ -223,11 +272,46 @@ const BibliographySearch: React.FC<BibliographySearchProps> = ({ bibData }) => {
             <div className="mt-3 p-3 bg-white rounded border-l-2 border-gray-300">
               <span className="font-medium text-gray-700">Abstract: </span>
               <span className="text-gray-600 text-sm">
-                {highlightText(fields.abstract, searchTerm)}
+                {highlightText(latexToUnicode(fields.abstract), searchTerm)}
               </span>
             </div>
           )}
-          
+
+          {/* Resource Buttons */}
+          {(fields.pdf || fields.code || fields.bibtex_show) && (
+            <div className="flex flex-wrap gap-2 mt-4">
+              {fields.pdf && (
+                <a
+                  href={fields.pdf}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block px-3 py-1 bg-[var(--sh-class)] text-white rounded hover:bg-[var(--accent-3)] transition-colors text-sm font-medium shadow"
+                >
+                  PDF
+                </a>
+              )}
+              {fields.code && (
+                <a
+                  href={fields.code}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block px-3 py-1 bg-[var(--sh-property)] text-white rounded hover:bg-[var(--sh-sign)] transition-colors text-sm font-medium shadow"
+                >
+                  Code
+                </a>
+              )}
+              {fields.bibtex_show && raw && (
+                <button
+                  type="button"
+                  onClick={() => setOpenBibtexKey(key)}
+                  className="inline-block px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-800 transition-colors text-sm font-medium shadow"
+                >
+                  BibTeX
+                </button>
+              )}
+            </div>
+          )}
+
           {/* Entry type and key */}
           <div className="text-xs text-gray-400 mt-2">
             Type: {type} | Key: {key}
@@ -252,6 +336,9 @@ const BibliographySearch: React.FC<BibliographySearchProps> = ({ bibData }) => {
     if (b === 'Unknown') return -1;
     return b.localeCompare(a);
   });
+
+  // BibTeX Modal
+  const openEntry = allEntries.find(e => e.key === openBibtexKey);
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -295,6 +382,24 @@ const BibliographySearch: React.FC<BibliographySearchProps> = ({ bibData }) => {
           </div>
           <div className="text-gray-500 text-sm mt-2">
             Try different keywords or check your spelling
+          </div>
+        </div>
+      )}
+      {/* BibTeX Modal */}
+      {openEntry && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--navbar-bg)]">
+          <div className="bg-[var(--background)] rounded-lg shadow-lg max-w-lg w-full p-6 relative">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-xl font-bold"
+              onClick={() => setOpenBibtexKey(null)}
+              aria-label="Close BibTeX modal"
+            >
+              ×
+            </button>
+            <h3 className="text-lg font-semibold mb-2">BibTeX Entry</h3>
+            <pre className="bg-gray-100 rounded p-3 overflow-x-auto text-xs whitespace-pre-wrap">
+              {openEntry.raw}
+            </pre>
           </div>
         </div>
       )}
