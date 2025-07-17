@@ -64,7 +64,7 @@ const BibliographySearch: React.FC<BibliographySearchProps> = ({ bibData }) => {
         // Skip whitespace and commas
         while (i < fieldsText.length && /[\s,]/.test(fieldsText[i])) i++;
         // Find field name
-        let nameStart = i;
+        const nameStart = i;
         while (i < fieldsText.length && /[\w]/.test(fieldsText[i])) i++;
         const fieldName = fieldsText.slice(nameStart, i).trim();
         if (!fieldName) break;
