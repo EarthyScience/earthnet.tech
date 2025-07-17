@@ -170,16 +170,16 @@ const BibliographySearch: React.FC<BibliographySearchProps> = ({ bibData }) => {
     const publisher = fields.publisher || '';
 
     return (
-      <li key={key} className="mb-4 p-4 border-l-4 border-blue-200 bg-gray-50 rounded-r-lg">
+      <li key={key} className="mb-4 p-4 border-l-4 rounded-r-lg">
         <div className="space-y-2">
           {/* Title */}
-          <h3 className="font-semibold text-lg text-gray-800">
+          <h3 className="font-semibold text-lg">
             {highlightText(title, searchTerm)}
           </h3>
           
           {/* Authors */}
           {authors && (
-            <div className="text-gray-600">
+            <div className="">
               <span className="font-medium">Authors: </span>
               {highlightText(authors, searchTerm)}
             </div>
@@ -263,12 +263,12 @@ const BibliographySearch: React.FC<BibliographySearchProps> = ({ bibData }) => {
           value={searchTerm}
           onChange={handleInputChange}
           placeholder="Search bibliography (authors, titles, keywords...)..."
-          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-transparent"
         />
       </div>
 
       {/* Results Summary */}
-      <div className="mb-4 text-sm text-gray-600">
+      <div className="mb-4 text-sm text-gray-400">
         Showing {filteredEntries.length} of {allEntries.length} entries
         {searchTerm && ` for "${searchTerm}"`}
       </div>
@@ -277,7 +277,7 @@ const BibliographySearch: React.FC<BibliographySearchProps> = ({ bibData }) => {
       <div className="space-y-6">
         {years.map(year => (
           <div key={year} className="bibliography-section">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-gray-300 pb-2">
+            <h2 className="text-2xl font-bold mb-4 border-b-1 border-gray-300 pb-2">
               {year}
             </h2>
             <ol className="space-y-4">
@@ -290,10 +290,10 @@ const BibliographySearch: React.FC<BibliographySearchProps> = ({ bibData }) => {
       {/* No results message */}
       {filteredEntries.length === 0 && searchTerm && (
         <div className="text-center py-12">
-          <div className="text-gray-500 text-lg">
+          <div className="text-gray-400 text-lg">
             No entries found for `{searchTerm}`
           </div>
-          <div className="text-gray-400 text-sm mt-2">
+          <div className="text-gray-500 text-sm mt-2">
             Try different keywords or check your spelling
           </div>
         </div>
