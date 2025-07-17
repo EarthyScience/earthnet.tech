@@ -216,106 +216,123 @@ const BibliographySearch: React.FC<BibliographySearchProps> = ({ bibData }) => {
     const authors = latexToUnicode(formatAuthors(fields.author));
     const year = fields.year || '';
     const journal = latexToUnicode(fields.journal || fields.booktitle || '');
-    const publisher = latexToUnicode(fields.publisher || ''); // TODO: check if this is correct
+    const publisher = latexToUnicode(fields.publisher || '');
+    const abbr = fields.abbr ? latexToUnicode(fields.abbr) : null;
+    const previewSrc = fields.preview ? `/${fields.preview.replace(/^\/+/, '')}` : null;
 
     return (
       <li key={key} className="mb-4 p-4 border-l-4 rounded-r-lg">
-        <div className="space-y-2">
-          {/* Title */}
+        {/* Top: Title and Authors only */}
+        <div className="mb-2">
           <h3 className="font-semibold text-lg">
             {highlightText(title, searchTerm)}
           </h3>
-          
-          {/* Authors */}
           {authors && (
             <div className="">
               <span className="font-medium">Authors: </span>
               {highlightText(authors, searchTerm)}
             </div>
           )}
-          
-          {/* Publication info */}
-          <div className="text-sm text-gray-500 space-y-1">
-            {journal && (
-              <div>
-                <span className="font-medium">Published in: </span>
-                {highlightText(journal, searchTerm)}
-              </div>
-            )}
-            
-            {publisher && (
-              <div>
-                <span className="font-medium">Publisher: </span>
-                {highlightText(publisher, searchTerm)}
-              </div>
-            )}
-            
-            {year && (
-              <div>
-                <span className="font-medium">Year: </span>
-                {highlightText(year, searchTerm)}
-              </div>
-            )}
-            
-            {fields.volume && (
-              <div>
-                <span className="font-medium">Volume: </span>
-                {fields.volume}
-                {fields.number && ` (${fields.number})`}
-                {fields.pages && `, pages ${fields.pages}`}
-              </div>
-            )}
-          </div>
-          
-          {/* Abstract */}
-          {fields.abstract && (
-            <div className="mt-3 p-3 bg-white rounded border-l-2 border-gray-300">
-              <span className="font-medium text-gray-700">Abstract: </span>
-              <span className="text-gray-600 text-sm">
-                {highlightText(latexToUnicode(fields.abstract), searchTerm)}
-              </span>
-            </div>
-          )}
-
-          {/* Resource Buttons */}
-          {(fields.pdf || fields.code || fields.bibtex_show) && (
-            <div className="flex flex-wrap gap-2 mt-4">
-              {fields.pdf && (
-                <a
-                  href={fields.pdf}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block px-3 py-1 bg-[var(--sh-class)] text-white rounded hover:bg-[var(--accent-3)] transition-colors text-sm font-medium shadow"
-                >
-                  PDF
-                </a>
+        </div>
+        {/* Bottom: All other fields left, abbr/thumbnail right */}
+        <div className="flex flex-row gap-4 items-start">
+          {/* Left: All other fields */}
+          <div className="flex-1 min-w-0 flex flex-col gap-2">
+            {/* Publication info */}
+            <div className="text-sm text-gray-500 space-y-1">
+              {journal && (
+                <div>
+                  <span className="font-medium">Published in: </span>
+                  {highlightText(journal, searchTerm)}
+                </div>
               )}
-              {fields.code && (
-                <a
-                  href={fields.code}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block px-3 py-1 bg-[var(--sh-property)] text-white rounded hover:bg-[var(--sh-sign)] transition-colors text-sm font-medium shadow"
-                >
-                  Code
-                </a>
+              {publisher && (
+                <div>
+                  <span className="font-medium">Publisher: </span>
+                  {highlightText(publisher, searchTerm)}
+                </div>
               )}
-              {fields.bibtex_show && raw && (
-                <button
-                  type="button"
-                  onClick={() => setOpenBibtexKey(key)}
-                  className="inline-block px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-800 transition-colors text-sm font-medium shadow"
-                >
-                  BibTeX
-                </button>
+              {year && (
+                <div>
+                  <span className="font-medium">Year: </span>
+                  {highlightText(year, searchTerm)}
+                </div>
+              )}
+              {fields.volume && (
+                <div>
+                  <span className="font-medium">Volume: </span>
+                  {fields.volume}
+                  {fields.number && ` (${fields.number})`}
+                  {fields.pages && `, pages ${fields.pages}`}
+                </div>
               )}
             </div>
-          )}
-
-          {/* Entry type and key */}
-          <div className="text-xs text-gray-400 mt-2">
-            Type: {type} | Key: {key}
+            {/* Abstract */}
+            {fields.abstract && (
+              <div className="mt-3 p-3 bg-white rounded border-l-2 border-gray-300">
+                <span className="font-medium text-gray-700">Abstract: </span>
+                <span className="text-gray-600 text-sm">
+                  {highlightText(latexToUnicode(fields.abstract), searchTerm)}
+                </span>
+              </div>
+            )}
+            {/* Resource Buttons */}
+            {(fields.pdf || fields.code || fields.bibtex_show) && (
+              <div className="flex flex-wrap gap-2 mt-4">
+                {fields.pdf && (
+                  <a
+                    href={fields.pdf}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block px-3 py-1 bg-[var(--sh-class)] text-white rounded hover:bg-[var(--accent-3)] transition-colors text-sm font-medium shadow"
+                  >
+                    PDF
+                  </a>
+                )}
+                {fields.code && (
+                  <a
+                    href={fields.code}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block px-3 py-1 bg-[var(--sh-property)] text-white rounded hover:bg-[var(--sh-sign)] transition-colors text-sm font-medium shadow"
+                  >
+                    Code
+                  </a>
+                )}
+                {fields.bibtex_show && raw && (
+                  <button
+                    type="button"
+                    onClick={() => setOpenBibtexKey(key)}
+                    className="inline-block px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-800 transition-colors text-sm font-medium shadow"
+                  >
+                    BibTeX
+                  </button>
+                )}
+              </div>
+            )}
+            {/* Entry type and key */}
+            <div className="text-xs text-gray-400 mt-2">
+              Type: {type} | Key: {key}
+            </div>
           </div>
+          {/* Right: Abbr and Thumbnail Preview only */}
+          {(abbr || previewSrc) && (
+            <div className="flex flex-col items-center justify-start min-w-[96px] max-w-[128px] gap-2 flex-shrink-0">
+              {abbr && (
+                <span className="inline-block bg-gray-200 text-gray-700 text-xs font-semibold px-2 py-0.5 rounded align-middle mb-1">
+                  {abbr}
+                </span>
+              )}
+              {previewSrc && (
+                <img
+                  src={previewSrc}
+                  alt={abbr ? `${abbr} preview` : 'Preview'}
+                  className="rounded-lg shadow max-h-40 object-contain"
+                  loading="lazy"
+                />
+              )}
+            </div>
+          )}
         </div>
       </li>
     );
