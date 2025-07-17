@@ -22,6 +22,7 @@ const BibliographySearch: React.FC<BibliographySearchProps> = ({ bibData }) => {
   const [allEntries, setAllEntries] = useState<BibEntry[]>([]);
   const [openBibtexKey, setOpenBibtexKey] = useState<string | null>(null); // Track open modal
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [expandedAuthors, setExpandedAuthors] = useState<Record<string, boolean>>({});
 
   // Parse BibTeX data
   const parseBibTeX = useCallback((bibText: string): BibEntry[] => {
@@ -197,9 +198,9 @@ const BibliographySearch: React.FC<BibliographySearchProps> = ({ bibData }) => {
     );
   };
 
-  // Format author names
-  const formatAuthors = (authors: string | undefined): string => {
-    if (!authors) return '';
+  // Format author names (returns array)
+  const formatAuthors = (authors: string | undefined): string[] => {
+    if (!authors) return [];
     return authors.split(' and ').map(author => {
       // Handle "Last, First" format
       if (author.includes(',')) {
@@ -207,36 +208,67 @@ const BibliographySearch: React.FC<BibliographySearchProps> = ({ bibData }) => {
         return `${first} ${last}`;
       }
       return author;
-    }).join(', ');
+    });
   };
 
   // Render a single bibliography entry
   const renderEntry = (entry: BibEntry): React.ReactElement => {
     const { type, key, fields, raw } = entry;
     const title = latexToUnicode(fields.title || 'Untitled');
-    const authors = latexToUnicode(formatAuthors(fields.author));
+    const authorsArr = formatAuthors(fields.author);
     const year = fields.year || '';
     const journal = latexToUnicode(fields.journal || fields.booktitle || '');
     const publisher = latexToUnicode(fields.publisher || '');
     const abbr = fields.abbr ? latexToUnicode(fields.abbr) : null;
     const previewSrc = fields.preview ? `/${fields.preview.replace(/^\/+/, '')}` : null;
 
+    // How many authors to show before truncating (approx. 2 lines)
+    const MAX_AUTHORS = 7;
+    const isExpanded = expandedAuthors[key];
+    const showTruncated = authorsArr.length > MAX_AUTHORS && !isExpanded;
+    const displayedAuthors = showTruncated ? authorsArr.slice(0, MAX_AUTHORS) : authorsArr;
+    const moreCount = authorsArr.length - MAX_AUTHORS;
+
     return (
-      <li key={key} className="mb-4 p-4 border-l-4 rounded-r-lg">
+      <li key={key} className="mb-4 p-2 sm:p-4 border-l-3 rounded-r-lg">
         {/* Top: Title and Authors only */}
         <div className="mb-2">
-          <h3 className="font-semibold text-lg">
+          <h3 className="font-semibold text-base">
             {highlightText(title, searchTerm)}
           </h3>
-          {authors && (
-            <div className="">
-              <span className="font-medium">Authors: </span>
-              {highlightText(authors, searchTerm)}
+          {authorsArr.length > 0 && (
+            <div className="text-sm">
+              {displayedAuthors.map((author, idx) => (
+                <span key={idx}>
+                  {highlightText(latexToUnicode(author), searchTerm)}
+                  {idx < displayedAuthors.length - 1 ? ', ' : ''}
+                </span>
+              ))}
+              {showTruncated && (
+                <>
+                  , <button
+                    type="button"
+                    className="cursor-pointer text-grey-400 underline decoration-dotted hover:text-blue-500 ml-1"
+                    onClick={() => setExpandedAuthors(prev => ({ ...prev, [key]: true }))}
+                  >
+                  and {moreCount} more author{moreCount > 1 ? 's' : ''}
+                  </button>
+                </>
+              )}
+              {isExpanded && authorsArr.length > MAX_AUTHORS && (
+                <button
+                  type="button"
+                  className="cursor-pointer text-orange-400 underline decoration-dotted hover:text-orange-600 ml-2"
+                  onClick={() => setExpandedAuthors(prev => ({ ...prev, [key]: false }))}
+                >
+                  show less
+                </button>
+              )}
             </div>
           )}
         </div>
         {/* Responsive: All other fields left, abbr/thumbnail right (md: row, base: col) */}
-        <div className="flex flex-col md:flex-row gap-4 items-start py-2">
+        <div className="flex flex-col sm:flex-row gap-4 items-start py-2">
           {/* left: Abbr and Thumbnail Preview only (responsive, on top for small screens) */}
           {(abbr || previewSrc) && (
             <div className="flex flex-col items-start justify-start min-w-[96px] max-w-[128px] gap-2 flex-shrink-0 w-full md:w-auto mb-4 md:mb-0 order-first md:order-none">
@@ -366,7 +398,7 @@ const BibliographySearch: React.FC<BibliographySearchProps> = ({ bibData }) => {
   const openEntry = allEntries.find(e => e.key === openBibtexKey);
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto p-2">
       {/* Search Input */}
       <div className="mb-6">
         <input
@@ -389,7 +421,7 @@ const BibliographySearch: React.FC<BibliographySearchProps> = ({ bibData }) => {
       <div className="space-y-6">
         {years.map(year => (
           <div key={year} className="bibliography-section">
-            <h2 className="text-2xl font-bold mb-4 border-b-1 border-gray-300 pb-2">
+            <h2 className="text-xl text-[var(--sh-sign)] text-right font-bold mb-4 border-b-1 border-[var(--sh-sign)] pb-2">
               {year}
             </h2>
             <ol className="space-y-4">
