@@ -1,16 +1,32 @@
 export const fundsLogos = [
       {
-        src: "/logoVA.png",
-        alt: "VA logo",
-        href: "https://github.com/EarthyScience/next-project-site",
-        width: 100,
-        height: 100
+        src: "/logo_mpi_bgc.png",
+        alt: "MPI BGC logo",
+        href: "https://www.bgc-jena.mpg.de/en/bgi/home",
+        height: 100,
+        width: 100
       },
       {
-        src: "/logoFP.png",
-        alt: "FP logo",
-        href: "https://github.com/EarthyScience/next-project-site",
-        width: 100,
-        height: 100
+        src: "/logo_ellis_jena.png",
+        alt: "ELLIS Unit Jena logo",
+        href: "https://ellis-jena.eu/",
+        height: 100,
+        width: 100
       }
-    ] 
+    ]
+export const fundsLogosGov = [
+      {
+        src: "/logo_esa.png",
+        alt: "ESA logo",
+        // href: "https://www.bgc-jena.mpg.de/en/bgi/home",
+        height: 100,
+        width: 100
+      },
+      {
+        src: "/logo_funding_eu.jpg",
+        alt: "EU logo",
+        // href: "https://ellis-jena.eu/",
+        height: 100,
+        width: 100
+      }
+    ]

@@ -65,6 +65,7 @@ export type DescriptionType = ReactNode;
 export interface FundingProps {
   logo?: LogoType;
   description: DescriptionType;
+  logo2?: LogoType;
   className?: string;
   defaultLogoText?: string;
 }

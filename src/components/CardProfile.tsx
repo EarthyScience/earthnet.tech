@@ -8,7 +8,7 @@ import {
   FaFacebook, FaGlobe
 } from 'react-icons/fa';
 import {
-  FaBluesky
+  FaBluesky,FaGoogleScholar
 } from 'react-icons/fa6';
 import ProtectedEmail from './ProtectedEmail';
 import './CardProfile.css'
@@ -22,6 +22,7 @@ const SOCIAL_ICONS: { [key: string]: React.ComponentType<{ size?: number }> } = 
   facebook: FaFacebook,
   website: FaGlobe,
   bluesky: FaBluesky,
+  scholar: FaGoogleScholar,
 };
 
 interface SocialLink {

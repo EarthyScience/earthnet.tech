@@ -9,6 +9,8 @@ import ProjectFunding from '@/assets/ProjectFunding';
 import { navFooter  } from '@/config/nav';
 import { contactInfo } from '@/assets/contacts';
 import { fundsLogos } from '@/assets/fundingLogos';
+import { fundsLogosGov } from '@/assets/fundingLogos';
+
 import Socials from '@/components/Socials'
 import { socialLinks } from '@/utils/socials'
 
@@ -17,8 +19,11 @@ const Footer = ({ className = "" }: FooterProps) => {
       <footer className={`bg-[var(--navbar-bg)] border-t border-[var(--navbar-border)] ${className}`}>
           <Funding
             logo={fundsLogos}
-            // description={projectText} // injecting a quoted text here will also work
             description={<ProjectFunding />}
+          />
+          <Funding
+            logo={fundsLogosGov}
+            description='We are grateful to our funders for their support.'
           />
           <div className="max-w-6xl mx-auto px-6 py-8 space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
