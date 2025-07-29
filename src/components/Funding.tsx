@@ -55,7 +55,6 @@ const RenderLogo = ({ logo, defaultLogoText }: {
 const Funding = ({ 
   logo, 
   description,
-  logo2,
   className = '',
   defaultLogoText = 'LOGO'
 }: FundingProps) => {
@@ -68,9 +67,6 @@ const Funding = ({
           </div>
           <div className="text-sm text-[var(--funding-text)] max-w-6xl">
             {description}
-          </div>
-          <div className="text-2xl font-bold text-[var(--foreground)] mb-4">
-            <RenderLogo logo={logo2} defaultLogoText={defaultLogoText} />
           </div>
         </div>
       </div>
