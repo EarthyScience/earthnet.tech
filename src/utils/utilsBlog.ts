@@ -3,6 +3,7 @@ import fs from 'fs'
 import path from 'path'
 
 type Metadata = {
+  href: string
   title: string
   publishedAt: string
   summary: string
