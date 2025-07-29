@@ -1,5 +1,7 @@
 export const bibtex = `---
 ---
+
+
 @article{reichstein2025ews,
   abbr = {Nat. Commun.},
   title={Early warning of complex climate risk with integrated artificial intelligence},
@@ -17,6 +19,22 @@ export const bibtex = `---
   bibtex_show={true},
 }
 
+@article{camps2025artificial,
+  abbr = {Nat. Commun.},
+  title={Artificial intelligence for modeling and understanding extreme weather and climate events},
+  author={Camps-Valls, Gustau and Fern{\'a}ndez-Torres, Miguel-{\'A}ngel and Cohrs, Kai-Hendrik and H{\"o}hl, Adrian and Castelletti, Andrea and Pacal, Aytac and Robin, Claire and Martinuzzi, Francesco and Papoutsis, Ioannis and Prapas, Ioannis and others},
+  journal={Nature Communications},
+  volume={16},
+  number={1},
+  pages={1919},
+  year={2025},
+  month={February},
+  publisher={Nature Publishing Group UK London},
+  pdf={https://www.nature.com/articles/s41467-025-56573-8},
+  preview={camps_ncomms_2025.png},
+  selected={true},
+  bibtex_show={true},
+}
 @article{ji2025deepextremecubes,
   abbr = {Sci. Data},
   title={DeepExtremeCubes: Earth system spatio-temporal data for assessing compound heatwave and drought impacts},
@@ -35,42 +53,6 @@ export const bibtex = `---
   code={https://github.com/DeepExtremes/minicube-generation},
 }
 
-@article{benson2024neuraltransport,
-      abbr = {JAMES},
-      title={Atmospheric Transport Modeling of CO2 with Neural Networks}, 
-      author={Benson, Vitus and Bastos, Ana and Reimers, Christian and Winkler, Alexander J. and Yang, Fanny and Reichstein, Markus},
-      year={2025},
-      month={February},
-      pages={e2024MS004655},
-      journal={Journal of Advances in Modeling Earth Systems},
-      volume={17},
-      number={2},
-      publisher={Wiley Online Library},
-      pdf={https://doi.org/10.1029/2024MS004655},
-      bibtex_show={true},
-      selected={true},
-      preview = {benson_james_2024.gif},
-      code={https://github.com/vitusbenson/carbonbench},
-}
-
-@article{yang2024wooddensity,
-abbr = {GCB},
-author = {Yang, Hui and Wang, Siyuan and Son, Rackhun and Lee, Hoontaek and Benson, Vitus and Zhang, Weijie and Zhang, Yahai and Zhang, Yuzhen and Kattge, Jens and Boenisch, Gerhard and Schepaschenko, Dmitry and Karaszewski, Zbigniew and Stereńczak, Krzysztof and Moreno-Martínez, Álvaro and Nabais, Cristina and Birnbaum, Philippe and Vieilledent, Ghislain and Weber, Ulrich and Carvalhais, Nuno},
-title = {Global patterns of tree wood density},
-journal = {Global Change Biology},
-volume = {30},
-number = {3},
-pages = {e17224},
-pdf = {https://doi.org/10.1111/gcb.17224},
-bibtex_show={true},
-selected={false},
-preview = {yang_gcb_2024.jpg},
-code={https://gitlab.gwdg.de/siyuan.wang/global-wood-density},
-year = {2024},
-month={March},
-}
-
-
 @article{benson2024multimodal,
       abbr = {CVPR},
       title={Multi-modal Learning for Geospatial Vegetation Forecasting}, 
@@ -84,25 +66,6 @@ month={March},
       selected={true},
       preview = {benson_cvpr_2024.gif},
       code={https://github.com/vitusbenson/greenearthnet},
-}
-
-@article{benson.etal_2024,
-  abbr = {ERL},
-  title = {Measuring Tropical Rainforest Resilience under Non-{{Gaussian}} Disturbances},
-  author = {Benson, Vitus and Donges, Jonathan F. and Boers, Niklas and Hirota, Marina and Morr, Andreas and Staal, Arie and Vollmer, Jürgen and Wunderling, Nico},
-  year = {2024},
-  month = {January},
-  journal = {Environmental Research Letters},
-  volume = {19},
-  number = {2},
-  pages = {024029},
-  publisher = {{IOP Publishing}},
-  doi = {10.1088/1748-9326/ad1e80},
-  pdf = {https://dx.doi.org/10.1088/1748-9326/ad1e80},
-  bibtex_show={true},
-  selected={false},
-  preview = {benson_erl_2024.png},
-  code={https://github.com/vitusbenson/tropical_rainforest_resilience_nongaussian},
 }
 
 

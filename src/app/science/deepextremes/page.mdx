@@ -1,1 +1,72 @@
-# DeepExtremes
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { FilteredTeamCardsGallery } from '@/components/TeamCardsGallery';
+
+
+<h1 className="text-3xl font-bold text-center -mb-6">DeepExtremes</h1>
+<div></div>
+
+DEEP EXTREMES is part of the ESA AI4SCIENCE activity. The first AI4SCIENCE ITT was launched in 2021 and had a focus on Extreme Events, Multi-Hazards and Compound Events, and contributes to the ESA Extremes and Natural Disasters Science Cluster.
+
+The ESA AI4SCIENCE ITT had 2 main objectives:
+
+1. **Advancing Earth System Science**: advancing our capacity to combine EO and AI to address a major scientific challenge: The observation, understanding and characterisation of multi-hazards, compound and cascade events and its impacts on society and ecosystems.
+2. **Advancing Artificial Intelligence for EO**: unlocking the full potential of Artificial Intelligence for Earth System Science with focus on two main AI challenges: physics-driven Artificial Intelligence and explainable AI.
+The DEEP EXTREMES project has a focus on compound heat and drought events at global scale, looking at detection based on long-term climate and land-surface data, combining EO archives and other observation data, with methods tailored to multivariate event detection.
+
+The principle is to start from sampling a subset of large events in Sentinel era and zooming into the events and in unaffected areas around the event with high-dimensional “mini cubes”.
+
+The activity then aims to train complementary deep-learning methods for prediction and understanding dynamics in such events, implement the tested and validated workflow in a cloud environment and developing it further based on community feedback. Science community engagement is planned via workshops and science discussions to further develop the proposed framework.
+
+
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  
+  <Card className="w-full max-w-sm hover:bg-[var(--accent)] transition-colors duration-200">
+    <CardHeader>
+    <CardTitle> <a href='https://rsc4earth.de/project/deepextremes/' target='_blank'> Visit the RSC4Earth Center website</a> </CardTitle>
+      <CardDescription>  For further information </CardDescription>
+    </CardHeader>
+  </Card>
+
+</div>
+
+
+<h1 className="text-3xl font-bold text-center -mb-6">Published Datasets</h1>
+<div></div>
+
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  
+  <Card className="w-full max-w-sm hover:bg-[var(--accent)] transition-colors duration-200">
+    <CardHeader>
+    <CardTitle> <a href='https://www.nature.com/articles/s41597-025-04447-5#Sec10' target='_blank'> DeepExtremeCubes </a> </CardTitle>
+      <CardDescription> Minicubes co-located with compound hot and dry events </CardDescription>
+    </CardHeader>
+  </Card>
+  
+  <Card className="w-full max-w-sm hover:bg-[var(--accent)] transition-colors duration-200">
+    <CardHeader>
+    <CardTitle> <a href='https://essd.copernicus.org/preprints/essd-2024-396/' target='_blank'> Dheed </a> </CardTitle>
+      <CardDescription> A global database of compound hot and dry extremes </CardDescription>
+    </CardHeader>
+  </Card>
+
+</div>
+
+
+<FilteredTeamCardsGallery
+    cardFilteredNames={["Melanie", "Vitus", "Claire", "MarkusR"]}
+    path="team/cards"
+    title = "Involved team members"
+/>
+
+
+<h1 className="text-3xl font-bold text-center -mb-6">Partners</h1>
+<div></div>
+![Overview of all the DeepExtremes partners: Leipzig University, Brockmann Consult, Universitat de Valencia and Max Planck Institute for Biogeochemistry](/projects/deepextremes_partnersoverview.png)
