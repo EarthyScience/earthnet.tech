@@ -1,10 +1,41 @@
-# Datasets
 
-Documentation for our public Datasets
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
-## GreenEarthNet
-[here](/resources/datasets/greenearthnet)
 
-## EarthNet2021
-[here](/resources/datasets/earthnet2021)
+
+# Documentation for our public datasets
+
+
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  
+  <Card className="w-full max-w-sm hover:bg-[var(--accent)] transition-colors duration-200">
+    <CardHeader>
+    <CardTitle> <a href='/resources/datasets/greenearthnet' target='_blank'> GreenEarthNet </a> </CardTitle>
+      <CardDescription> High resolution minicubes over Europe for geospatial vegetation forecasting </CardDescription>
+    </CardHeader>
+  </Card>
+      
+  <Card className="w-full max-w-sm hover:bg-[var(--accent)] transition-colors duration-200">
+    <CardHeader>
+    <CardTitle> <a href='https://www.nature.com/articles/s41597-025-04447-5#Sec10' target='_blank'> DeepExtremeCubes </a> </CardTitle>
+      <CardDescription> Minicubes co-located with compound hot and dry events </CardDescription>
+    </CardHeader>
+  </Card>
+
+  <Card className="w-full max-w-sm hover:bg-[var(--accent)] transition-colors duration-200">
+    <CardHeader>
+    <CardTitle> <a href='/resources/datasets/earthnet2021' target='_blank'> EarthNet2021 </a> </CardTitle>
+      <CardDescription> The first collection of minicubes for Earth surface forecasting. </CardDescription>
+    </CardHeader>
+  </Card>
+
+</div>
 
