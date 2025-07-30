@@ -5,6 +5,7 @@ export interface RepoCardData {
   forks: number;
   stars: number;
   lastUpdated: string;
+  href: string;
 }
 
 interface GitHubRepoResponse {
@@ -70,7 +71,8 @@ const repoLoader = {
         language: repoData.language || "Unknown",
         forks: repoData.forks_count,
         stars: repoData.stargazers_count,
-        lastUpdated: formatLastUpdated(repoData.updated_at)
+        lastUpdated: formatLastUpdated(repoData.updated_at),
+        href: repoUrl
       };
     } catch (error) {
       if (process.env.CI) throw error;
@@ -80,7 +82,8 @@ const repoLoader = {
         language: "Unknown",
         forks: 0,
         stars: 0,
-        lastUpdated: "unknown"
+        lastUpdated: "unknown",
+        href: "#"
       };
     }
   }

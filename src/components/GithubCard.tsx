@@ -13,10 +13,11 @@ import {
 export function GitHubCard({
   name = "awesome-project",
   description = "A fantastic open-source project that solves real-world problems with elegant code and comprehensive documentation.",
-  language = "JavaScript",
-  forks = 1234,
-  stars = 5678,
-  lastUpdated = "2 days ago"
+  language = "Julia",
+  forks = 2718,
+  stars = 1618,
+  lastUpdated = "now",
+  href = "#"
 }) {
   // Language color mapping (common GitHub language colors)
   const languageColors: { [key: string]: string } = {
@@ -49,6 +50,13 @@ export function GitHubCard({
       <CardHeader className="pb-2 sm:pb-3 -mt-3">
         {/* Repository Name and Star Button */}
         <div className="flex items-start justify-between gap-2 mb-2 min-w-0">
+          <a 
+              href={href} 
+              className="flex items-center gap-2 cursor-pointer min-w-0 flex-1"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+
           <CardTitle className="flex items-center gap-2 text-base sm:text-lg font-semibold cursor-pointer min-w-0 flex-1 overflow-hidden">
             <div className="w-4 h-4 flex items-center justify-center flex-shrink-0">
               <RiGitRepositoryLine className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -59,12 +67,14 @@ export function GitHubCard({
           <Button 
             variant="secondary" 
             size="sm" 
-            className="flex items-center gap-1 text-xs px-2 py-1 sm:px-3 sm:py-1.5 flex-shrink-0 cursor-pointer h-7 sm:h-8"
+            className="flex items-center gap-1 text-xs px-2 py-1 sm:px-3 sm:py-1.5 flex-shrink-0 cursor-pointer h-7 sm:h-8 hover:[color:var(--accent-3)] transition-colors duration-200"
           >
             <Star size={10} className="sm:w-3 sm:h-3" />
             <span className="hidden xs:inline sm:inline">Star us!</span>
             <span className="xs:hidden sm:hidden">us!</span>
           </Button>
+          
+          </a>
         </div>
 
         {/* Description */}
@@ -88,13 +98,13 @@ export function GitHubCard({
           {/* Stats Row */}
           <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 min-w-0">
             {/* Stars */}
-            <div className="flex items-center gap-1 hover:text-gray-800 cursor-pointer flex-shrink-0">
+            <div className="flex items-center gap-1 flex-shrink-0">
               <Star size={12} className="sm:w-3.5 sm:h-3.5" />
               <span>{stars.toLocaleString()}</span>
             </div>
 
             {/* Forks */}
-            <div className="flex items-center gap-1 hover:text-gray-800 cursor-pointer flex-shrink-0">
+            <div className="flex items-center gap-1 flex-shrink-0">
               <GitFork size={12} className="sm:w-3.5 sm:h-3.5" />
               <span>{forks.toLocaleString()}</span>
             </div>
