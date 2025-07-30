@@ -1,72 +1,51 @@
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { CustomCard, CustomCardHorizontal } from '@/components/CustomCard';
 import { FilteredTeamCardsGallery } from '@/components/TeamCardsGallery';
-
+import { FaGithub } from "react-icons/fa";
 
 ![WeatherGenerator](/projects/logo_weathergenerator.png)
-
-
-
 
 
 The WeatherGenerator Horizon Europe project aims to develop a foundation model of the Earth System. This advanced AI system is meant to improve weather and climate forecasts and related downstream applications in Renewable Energy, Health and Disaster Resilience to better prepare society before extreme climate shocks.
 
 The WeatherGenerator project, coordinated by the European Centre for Medium-Range Weather Forecasts (ECMWF), is a collaborative effort involving 16 European organizations, specializing in high-performance computing, machine learning, and Earth system modeling. By integrating machine learning techniques, WeatherGenerator aims to improve the accuracy and efficiency of weather and impact predictions, thereby contributing to better preparedness and response to weather-related events.
 
-The Weather Generator project develops a foundation model of the Earth system using AI to analyze vast atmospheric and land surface data. Here, the EarthNet Initiative builds the land surface foundation model component by exploiting terrabytes of satellite data. This model enables detailed forecasting of environmental changes, such as vegetation responses to droughts and high-resolution heat wave predictions. Additionally, it helps understand carbon exchange in ecosystems, examining how plants absorb CO₂ through photosynthesis and how soil releases it via respiration. These insights contribute to climate research and inform climate agreements by assessing the land’s role as a carbon sink.
+The Weather Generator project develops a foundation model of the Earth system using AI to analyze vast atmospheric and land surface data. Here, the EarthNet Initiative builds the land surface foundation model component by exploiting terabytes of satellite data. This model enables detailed forecasting of environmental changes, such as vegetation responses to droughts and high-resolution heat wave predictions. Additionally, it helps understand carbon exchange in ecosystems, examining how plants absorb CO₂ through photosynthesis and how soil releases it via respiration. These insights contribute to climate research and inform climate agreements by assessing the land’s role as a carbon sink.
 
+<CustomCard
+  title="Visit WeatherGenerator.eu "
+  description="For further information"
+  href="https://weathergenerator.eu/"
+/>
 
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-  
-  <Card className="w-full max-w-sm hover:bg-[var(--accent)] transition-colors duration-200">
-    <CardHeader>
-    <CardTitle> <a href='https://weathergenerator.eu/' target='_blank'> Visit WeatherGenerator.eu </a> </CardTitle>
-      <CardDescription>  For further information </CardDescription>
-    </CardHeader>
-  </Card>
-
-</div>
-
-
-<h1 className="text-3xl font-bold text-center -mb-6">EarthNet Team Contributions</h1>
-<div></div>
+<h1 className="text-3xl font-bold text-center -mb-6"> EarthNet Team Contributions </h1>
+<br/>
 
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-  
-  <Card className="w-full max-w-sm hover:bg-[var(--accent)] transition-colors duration-200">
-    <CardHeader>
-    <CardTitle> <a href='https://github.com/EarthyScience/WeatherGenerator-Land' target='_blank'> WeatherGenerator-Land </a> </CardTitle>
-      <CardDescription>We explore self-supervised learning of land surface dynamics with our land surface foundation model WeatherGenerator-Land. </CardDescription>
-    </CardHeader>
-  </Card>
 
-  <Card className="w-full max-w-sm hover:bg-[var(--accent)] transition-colors duration-200">
-    <CardHeader>
-    <CardTitle> Vegetation modeling for Food Security </CardTitle>
-      <CardDescription> Leveraging WeatherGenerator-Land for drought impact forecasting in a food security context on sub-seasonal to seasonal time scales. </CardDescription>
-    </CardHeader>
-  </Card>
-  <Card className="w-full max-w-sm hover:bg-[var(--accent)] transition-colors duration-200">
-    <CardHeader>
-      <CardTitle> Temperature Forecasting for Health </CardTitle>
-      <CardDescription> Downscaling forecasts of heat waves to very high resolution land surface temperature with WeatherGenerator-Land. </CardDescription>
-    </CardHeader>
-  </Card>
-    <Card className="w-full max-w-sm hover:bg-[var(--accent)] transition-colors duration-200">
-    <CardHeader>
-      <CardTitle> Biosphere Fluxes </CardTitle>
-      <CardDescription> Diagnosing the exchange of energy, water and carbon between the land surface and the atmosphere using WeatherGenerator-Land embeddings. </CardDescription>
-    </CardHeader>
-  </Card>
+  <CustomCard
+    title="WeatherGenerator-Land"
+    description="We explore self-supervised learning of land surface dynamics with our land surface foundation model WeatherGenerator-Land."
+    href="https://github.com/EarthyScience/WeatherGenerator-Land"
+    icon={FaGithub}
+    showIcon={true}
+  />
+
+  <CustomCard
+    title="Vegetation modeling for Food Security"
+    description="Leveraging WeatherGenerator-Land for drought impact forecasting in a food security context on sub-seasonal to seasonal time scales."
+  />
+
+  <CustomCard
+    title="Temperature Forecasting for Health"
+    description="Downscaling forecasts of heat waves to very high resolution land surface temperature with WeatherGenerator-Land."
+  />
+
+  <CustomCard
+    title="Biosphere Fluxes"
+    description="Diagnosing the exchange of energy, water and carbon between the land surface and the atmosphere using WeatherGenerator-Land embeddings."
+  />
+
 </div>
-
 
 <FilteredTeamCardsGallery
     cardFilteredNames={["MarkusR", "Vitus", "Sebastian", "Marieke", "MarkusZ", "Melanie", "Christian", "Nuno"]}

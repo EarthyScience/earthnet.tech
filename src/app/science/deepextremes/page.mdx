@@ -1,12 +1,4 @@
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { CustomCard, CustomCardHorizontal } from '@/components/CustomCard';
 import { FilteredTeamCardsGallery } from '@/components/TeamCardsGallery';
 
 
@@ -25,38 +17,27 @@ The principle is to start from sampling a subset of large events in Sentinel era
 
 The activity then aims to train complementary deep-learning methods for prediction and understanding dynamics in such events, implement the tested and validated workflow in a cloud environment and developing it further based on community feedback. Science community engagement is planned via workshops and science discussions to further develop the proposed framework.
 
-
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-  
-  <Card className="w-full max-w-sm hover:bg-[var(--accent)] transition-colors duration-200">
-    <CardHeader>
-    <CardTitle> <a href='https://rsc4earth.de/project/deepextremes/' target='_blank'> Visit the RSC4Earth Center website</a> </CardTitle>
-      <CardDescription>  For further information </CardDescription>
-    </CardHeader>
-  </Card>
-
-</div>
+<CustomCard
+  title="Visit the RSC4Earth Center website"
+  description="For further information"
+  href="https://rsc4earth.de/project/deepextremes/"
+/>
 
 
 <h1 className="text-3xl font-bold text-center -mb-6">Published Datasets</h1>
 <div></div>
 
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-  
-  <Card className="w-full max-w-sm hover:bg-[var(--accent)] transition-colors duration-200">
-    <CardHeader>
-    <CardTitle> <a href='https://www.nature.com/articles/s41597-025-04447-5#Sec10' target='_blank'> DeepExtremeCubes </a> </CardTitle>
-      <CardDescription> Minicubes co-located with compound hot and dry events </CardDescription>
-    </CardHeader>
-  </Card>
-  
-  <Card className="w-full max-w-sm hover:bg-[var(--accent)] transition-colors duration-200">
-    <CardHeader>
-    <CardTitle> <a href='https://essd.copernicus.org/preprints/essd-2024-396/' target='_blank'> Dheed </a> </CardTitle>
-      <CardDescription> A global database of compound hot and dry extremes </CardDescription>
-    </CardHeader>
-  </Card>
-
+  <CustomCard
+    title="DeepExtremeCubes"
+    description="Minicubes co-located with compound hot and dry events"
+    href="https://www.nature.com/articles/s41597-025-04447-5#Sec10"
+  />
+  <CustomCard
+    title=" Dheed"
+    description="A global database of compound hot and dry extremes"
+    href="https://essd.copernicus.org/preprints/essd-2024-396/"
+  />
 </div>
 
 
@@ -68,5 +49,6 @@ The activity then aims to train complementary deep-learning methods for predicti
 
 
 <h1 className="text-3xl font-bold text-center -mb-6">Partners</h1>
-<div></div>
+<br/>
+
 ![Overview of all the DeepExtremes partners: Leipzig University, Brockmann Consult, Universitat de Valencia and Max Planck Institute for Biogeochemistry](/projects/deepextremes_partnersoverview.png)

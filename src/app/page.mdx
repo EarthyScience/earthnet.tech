@@ -1,4 +1,3 @@
-
 import ContentSplitSection from '@/components/ContentSplitSection';
 import Image from 'next/image';
 // import EarthGlobe from '@/components/EarthGlobe'; 
@@ -12,73 +11,54 @@ import { SiMdx } from "react-icons/si";
 import { SiThreedotjs } from "react-icons/si";
 import { SiTypescript } from "react-icons/si";
 import { FaHeartbeat } from "react-icons/fa";
+import { CustomCard, CustomCardHorizontal } from '@/components/CustomCard';
 
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-
-    <div className={`w-full rounded-lg overflow-hidden`}>
-      <div className="mx-auto py-2 md:py-2 flex flex-col md:flex-row items-center">
-          <>
-          <div className="md:w-2/3 mb-8 md:mb-0 md:mx-8 text-center md:text-left">
-            <h1 
-              className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-bold leading-tight px-2 -mb-3"
-              style={{
-                background: 'linear-gradient(90deg, #2563eb, #22c55e, #0d9488)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}
-            >
-              EarthNet Initiative
-            </h1>
-            <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold leading-tight px-2 text-gray-700">
-              Towards Earth surface forecasting
-            </h2>
-          </div>
-            <div className={`md:w-1/2 flex justify-center md:mx-8`}>
-            <MagicBox />
-            </div>
-          </>
+<div className={`w-full rounded-lg overflow-hidden`}>
+  <div className="mx-auto py-2 md:py-2 flex flex-col md:flex-row items-center">
+      <>
+      <div className="md:w-2/3 mb-8 md:mb-0 md:mx-8 text-center md:text-left">
+        <h1 
+          className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-bold leading-tight px-2 -mb-3"
+          style={{
+            background: 'linear-gradient(90deg, #2563eb, #22c55e, #0d9488)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text'
+          }}
+        >
+          EarthNet Initiative
+        </h1>
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold leading-tight px-2 text-gray-700">
+          Towards Earth surface forecasting
+        </h2>
       </div>
-    </div>
+        <div className={`md:w-1/2 flex justify-center md:mx-8`}>
+        <MagicBox />
+        </div>
+      </>
+  </div>
+</div>
 
-{/* <ContentSplitSection
-    title="EarthNet Initiative" 
-    subtitle="Towards Earth surface forecasting"
-    media={<MagicBox />}
-    layout='text-emphasis'
-/> */}
+{/* set a grid of cards */}
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+<CustomCardHorizontal
+  title="Earth Surface Forecasting"
+  description="Using Machine Learning to forecast the dynamics of Earth's surface, we can predict crop yield, forest health, the effects of a drought and more."
+  href="/science"
+  avatarSrc="publication_preview/requenamesa_earthvision_2021.gif"
+/>
 
+<CustomCard
+  title="EarthNet Team"
+  description="Meet our team."
+  href="/team"
+  avatarSrc="https://github.com/shadcn.png"
+  avatarFallback="AI"
+/>
 
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-  
-  <Card className="w-full max-w-sm hover:bg-[var(--accent)] transition-colors duration-200">
-    <CardHeader>
-    <CardTitle> <a href='/science' target='_blank'> Earth surface forecasting </a> </CardTitle>
-      <FaHeartbeat size={24}/> 
-      <CardDescription>Using Machine Learning to forecast the dynamics of Earth’s surface, we can predict crop yield, forest health, the effects of a drought and more. </CardDescription>
-    </CardHeader>
-  </Card>
-
-  <Card className="w-full max-w-sm hover:bg-[var(--accent)] transition-colors duration-200">
-    <CardHeader>
-    <CardTitle> <a href='/team' target='_blank'> EarthNet Team </a> </CardTitle>
-      <SiMdx size={24} />
-      <CardDescription> Meet our team. </CardDescription>
-    </CardHeader>
-  </Card>
-  <Card className="w-full max-w-sm hover:bg-[var(--accent)] transition-colors duration-200">
-    <CardHeader>
-      <CardTitle><a href='/resources/opportunities' target='_blank'>Opportunities</a></CardTitle>
-      <SiNextdotjs size={24}/>
-      <CardDescription>Come work or collaborate with us!</CardDescription>
-    </CardHeader>
-  </Card>
+<CustomCard
+  title="Opportunities"
+  description="Come work or collaborate with us!"
+  href="/resources/opportunities"
+/>
 </div>

@@ -1,12 +1,4 @@
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { CustomCard, CustomCardHorizontal } from '@/components/CustomCard';
 import { FilteredTeamCardsGallery } from '@/components/TeamCardsGallery';
 
 
@@ -14,39 +6,27 @@ import { FilteredTeamCardsGallery } from '@/components/TeamCardsGallery';
   <img src="/projects/logo_elias.png" alt="ELIAS" className="w-64 h-auto" />
 </div>
 
-
-
 European Lighthouse of AI for Sustainability.
 
 ELIAS aims at establishing Europe as a leader in Artificial Intelligence (AI) research that drives sustainable innovation and economic development.
 
 We will create a Network of Excellence connecting researchers in academia with practitioners in the industry to differentiate Europe as a region where AI research builds towards a sustainable long-term future for our planet, contributes to a cohesive society, and respects individual preferences and rights.
 
-
-
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-  
-  <Card className="w-full max-w-sm hover:bg-[var(--accent)] transition-colors duration-200">
-    <CardHeader>
-    <CardTitle> <a href='https://elias-ai.eu/' target='_blank'> Visit ELIAS-AI.eu </a> </CardTitle>
-      <CardDescription>  For further information </CardDescription>
-    </CardHeader>
-  </Card>
-
-</div>
-
+<CustomCard
+  title="Visit ELIAS-AI.eu"
+  description="For further information"
+  href="https://elias-ai.eu/"
+/>
 
 <h1 className="text-3xl font-bold text-center -mb-6">EarthNet Team Contributions</h1>
-<div></div>
+<br/>
 
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
   
-  <Card className="w-full max-w-sm hover:bg-[var(--accent)] transition-colors duration-200">
-    <CardHeader>
-    <CardTitle> AI for Forecasting of Vegetation State </CardTitle>
-      <CardDescription>Studying AI-based predictions of the effects of climate extremes on ecosystems, which can then be translated into crop harvest, forest health and water balance forecasts. </CardDescription>
-    </CardHeader>
-  </Card>
+  <CustomCard
+    title="AI for Forecasting of Vegetation State"
+    description="Studying AI-based predictions of the effects of climate extremes on ecosystems, which can then be translated into crop harvest, forest health and water balance forecasts."
+  />
 
 </div>
 
