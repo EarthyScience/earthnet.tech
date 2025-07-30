@@ -35,14 +35,14 @@ export const CustomCard = ({
   className = "",
 }: CustomCardProps) => {
   return (
-    <Card className={`w-full max-w-md hover:bg-[var(--accent)] transition-colors duration-200 ${className}`}>
+    <Card className={`w-full max-w-sm mx-auto min-w-0 hover:shadow-md transition-shadow duration-200 ${className}`}>
       <CardHeader>
         {/* Avatar and Title row */}
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-2 sm:gap-3 md:gap-4">
           {/* Avatar or Icon on the left */}
           {avatarSrc ? (
             <div className="border-[1.5px] border-gray-300 rounded-full p-0.5">
-              <Avatar className="h-12 w-12">
+              <Avatar className="h-10 w-10 sm:h-12 sm:w-12">
                 <AvatarImage src={avatarSrc} alt="Avatar" />
                 <AvatarFallback>{avatarFallback}</AvatarFallback>
               </Avatar>
@@ -55,7 +55,7 @@ export const CustomCard = ({
           
           {/* Title on the right */}
           <div className="flex-1 min-w-0">
-            <CardTitle className="text-lg">
+            <CardTitle className="text-sm sm:text-base md:text-lg leading-tight">
               {href ? (
                 <a href={href} target={target} className="hover:underline inline-flex items-center gap-2">
                   {title}
@@ -90,7 +90,7 @@ export const CustomCardHorizontal = ({
   className = "",
 }: CustomCardProps) => {
   return (
-    <Card className={`w-full max-w-md transition-colors hover:bg-[var(--accent)] duration-200 ${className}`}>
+    <Card className={`w-full max-w-sm mx-auto min-w-0 hover:shadow-md transition-shadow duration-200 ${className}`}>
   <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 px-3 -mt-4 sm:mt-0 pb-0">
     {/* Image Section — responsive positioning */}
     <div className="flex justify-center sm:block">
