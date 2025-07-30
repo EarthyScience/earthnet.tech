@@ -1,4 +1,31 @@
-# Software libraries
+import { GitHubCard } from "@/components/GithubCard";
+import { DynamicGitHubCard } from "@/components/DynamicGitHubCard";
+import { repositories } from "./repositories";
 
-Find repositories here https://github.com/EarthyScience/WeatherGenerator-Land
+<h1 className="text-3xl font-bold text-gray-900 text-center">
+Software libraries
+</h1>
 
+<DynamicGitHubCard 
+  repoUrl="https://github.com/EarthyScience/WeatherGenerator-Land"
+/>
+
+<h1 className="text-3xl font-bold text-gray-900 text-center">
+GitHub Repositories
+</h1>
+
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+{repositories.map((repo, index) => (
+    <DynamicGitHubCard key ={index} repoUrl={repo} />
+))}
+</div>
+
+
+{/* <GitHubCard 
+  name="WeatherGenenerator-Land"
+  description="A Python package for generating synthetic weather data for land applications."
+  language="Julia"
+  stars={42}
+  forks={10}
+  updatedAt="2023-10-01"
+/> */}
