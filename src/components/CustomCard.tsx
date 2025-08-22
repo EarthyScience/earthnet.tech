@@ -81,7 +81,7 @@ export const CustomCardHorizontal = ({
   title,
   description,
   href,
-  target = "_blank",
+  target = "_self",
   avatarSrc = null,
   avatarFallback = "CN",
   showIcon = false,
@@ -95,11 +95,14 @@ export const CustomCardHorizontal = ({
     {/* Image Section — responsive positioning */}
     <div className="flex justify-center sm:block">
       {avatarSrc ? (
-        <Avatar className="h-24 w-24 rounded-md shadow-md">
-          <AvatarImage src={avatarSrc} alt="Avatar" />
-          <AvatarFallback>{avatarFallback}</AvatarFallback>
-        </Avatar>
-      ) : showIcon && IconComponent ? (
+  <div className="h-24 w-24 rounded-md shadow-md overflow-hidden flex items-center justify-center bg-gray-50">
+    <img 
+      src={avatarSrc} 
+      alt="Avatar" 
+      className="max-h-full max-w-full object-contain"
+    />
+  </div>
+) : showIcon && IconComponent ? (
         <div className="w-24 h-24 flex items-center justify-center rounded-md bg-gray-100 shadow-md">
           <IconComponent size={iconSize} className="text-gray-500" />
         </div>

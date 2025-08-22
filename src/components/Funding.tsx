@@ -11,7 +11,7 @@ const Logo = ({ logo }: { logo: LogoItem }) => {
       alt={logo.alt} 
       width={logo.width}
       height={logo.height}
-      className="h-8 w-auto"
+      className="h-auto w-auto max-h-8 sm:max-h-12 object-contain"
       priority
     />
   );
@@ -37,7 +37,7 @@ const RenderLogo = ({ logo, defaultLogoText }: {
 
   if (Array.isArray(logo)) {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row items-center sm:items-center gap-4 sm:gap-2">
         {logo.map((item, index) => (
           <Logo key={index} logo={item} />
         ))}
