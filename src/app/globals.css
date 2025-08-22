@@ -346,3 +346,29 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Dark mode image switching */
+[data-theme='dark'] .light-mode-image {
+  display: none !important;
+}
+
+[data-theme='dark'] .dark-mode-image {
+  display: block !important;
+}
+
+[data-theme='light'] .light-mode-image {
+  display: block !important;
+}
+
+[data-theme='light'] .dark-mode-image {
+  display: none !important;
+}
+
+/* Gradient overlay for different themes */
+[data-theme='dark'] .theme-gradient {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.3), transparent);
+}
+
+[data-theme='light'] .theme-gradient {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 255, 255, 0.3), transparent);
+}

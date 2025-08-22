@@ -11,21 +11,21 @@ export default function Landing() {
       <div className="absolute inset-0 z-0 select-none">
         <Image
           alt="Earth from space - light mode"
-          className="z-0 w-full h-full object-cover block dark:hidden pointer-events-none"
-          src="/place_holder.jpg"
+          className="z-0 w-full h-full object-cover light-mode-image pointer-events-none"
+          src="/place_holder_white.jpg"
           fill
           quality={100}
           priority
         />
         <Image
           alt="Earth from space - dark mode"
-          className="z-0 w-full h-full object-cover hidden dark:block pointer-events-none"
-          src="/place_holder_white.jpg"
+          className="z-0 w-full h-full object-cover dark-mode-image pointer-events-none"
+          src="/place_holder.jpg"
           fill
           quality={100}
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
+        <div className="absolute inset-0 theme-gradient" />
       </div>
 
       {/* Hero Content */}
