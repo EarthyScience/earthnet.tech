@@ -1,28 +1,52 @@
+import { CustomCard, CustomCardHorizontal } from '@/components/CustomCard';
+
+
+![Stylistic rendering of satellite images and a globe. (© L. Alonso/MPI-BGC)](/header/minicubes_lazaro.png)
+
 # Towards Earth surface forecasting
 
-## Land Surface Foundation Models
+The EarthNet Initiative develops machine learning models to forecast the Earth's surface dynamics. We take a data-centric stance by primarily leveraging high-resolution satellite remote sensing to forecast and monitor responses of the terrestrial biosphere to weather patterns on different time scales. Our research focuses on the dynamics of the Earth system to enable a wide range of applications around the mitigation of complex climate risks, for instance through impact-based forecasts and early warning systems for extreme weather events. 
 
-## Early Warning
+## What we do
+1. **Large-scale satellite image deep learning**: We develop datasets and train large-scale deep neural networks on satellite imagery, to enable a multitude of land surface oriented downstream applications.
+2. **Climate risk mitigation**: We study our approaches in the context of extreme climate risks and their associated impacts. In particular, we assess how our AI approaches may support societal responses to changing climate risks.
+3. **Tailored machine learning for geoscience**: We adapt and design tailored neural network architectures for uni- and multi-modal environmental tasks. This includes accounting for challenging scenarios like long-range interactions, ecological memory or non-IID datasets.
+4. **Collaboration with stakeholders**: We engage with stakeholders from NGOs and the public sector to transfer our scientific findings and methods into tangible real-world impact.
 
-## Geospatial Vegetation Forecasting
-
-## Drought Impacts
-
-## Heatwave Nowcasting
-
-## Anticipatory Action
-
-## Vegetation structure
-
-## Carbon cycle monitoring
+## Vision
+We aim to address gaps in traditional approaches to modeling the land surface, by leveraging machine learning to directly work with the only globally-available observed data: satellite remote sensing. Through an interdisciplinary team with expertise in both, Geosciences and machine learning, we tackle unresolved challenges in forecasting the Earth’s surface to test our process understanding and ultimately contribute to improved climate risk mitigation.
 
 
-# Our thrid-party funded projects
+# Our third-party funded projects
 
-## [WeatherGenerator](/science/weathergenerator)
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
-## [ELIAS](/science/elias)
+  <CustomCardHorizontal
+            title="WeatherGenerator"
+            description="Horizon Europe project."
+            href="/science/weathergenerator"
+            avatarSrc="projects/logo_weathergenerator.png"
+    />
 
-## [DeepExtremes](/science/deepextremes)
+  <CustomCardHorizontal
+            title="ELIAS"
+            description="Horizon Europe project."
+            href="/science/elias"
+            avatarSrc="projects/logo_elias.png"
+    />
 
-## [DeepCube](/science/deepcube)
+  <CustomCard
+    title="DeepExtremes"
+    description="ESA AI4Science ITT."
+    href="/science/deepextremes"
+  />
+
+  <CustomCardHorizontal
+            title="DeepCube"
+            description="Horizon 2020 project."
+            href="/science/deepcube"
+            avatarSrc="projects/logo_deepcube.png"
+    />
+
+</div>
+
