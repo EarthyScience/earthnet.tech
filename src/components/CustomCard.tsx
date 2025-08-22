@@ -9,11 +9,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ComponentType } from "react";
 import { FaExternalLinkAlt } from "react-icons/fa";
 
+// Add this helper function at the top
+const isExternalUrl = (url?: string) => {
+  if (!url) return false;
+  return url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//');
+};
+
+
 type CustomCardProps = {
   title: string;
   description: string;
   href: string;
-  target?: string;
+  target?: string; // Keep this optional for manual override if needed
   avatarSrc?: string | null;
   avatarFallback?: string;
   showIcon?: boolean;
@@ -26,7 +33,7 @@ export const CustomCard = ({
   title,
   description,
   href,
-  target = "_blank",
+  target, // Remove default value, we'll determine it automatically
   avatarSrc = null,
   avatarFallback = "CN",
   showIcon = false,
@@ -34,6 +41,9 @@ export const CustomCard = ({
   iconSize = 24,
   className = "",
 }: CustomCardProps) => {
+  const isExternal = isExternalUrl(href);
+  const linkTarget = target || (isExternal ? "_blank" : "_self");
+
   return (
     <Card className={`w-full max-w-sm mx-auto min-w-0 hover:shadow-md transition-shadow duration-200 ${className}`}>
       <CardHeader>
@@ -57,9 +67,14 @@ export const CustomCard = ({
           <div className="flex-1 min-w-0">
             <CardTitle className="text-sm sm:text-base md:text-lg leading-tight">
               {href ? (
-                <a href={href} target={target} className="hover:underline inline-flex items-center gap-2">
+                <a 
+                  href={href} 
+                  target={linkTarget} 
+                  rel={isExternal ? "noopener noreferrer" : undefined}
+                  className="hover:underline inline-flex items-center gap-2"
+                >
                   {title}
-                  <FaExternalLinkAlt size={12} className="flex-shrink-0 opacity-60" />
+                  {isExternal && <FaExternalLinkAlt size={12} className="flex-shrink-0 opacity-60" />}
                 </a>
               ) : (
                 title
@@ -81,7 +96,7 @@ export const CustomCardHorizontal = ({
   title,
   description,
   href,
-  target = "_self",
+  target, // Remove default value
   avatarSrc = null,
   avatarFallback = "CN",
   showIcon = false,
@@ -89,43 +104,53 @@ export const CustomCardHorizontal = ({
   iconSize = 24,
   className = "",
 }: CustomCardProps) => {
+  const isExternal = isExternalUrl(href);
+  const linkTarget = target || (isExternal ? "_blank" : "_self");
+
   return (
     <Card className={`w-full max-w-sm mx-auto min-w-0 hover:shadow-md transition-shadow duration-200 ${className}`}>
-  <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 px-3 -mt-4 sm:mt-0 pb-0">
-    {/* Image Section — responsive positioning */}
-    <div className="flex justify-center sm:block">
-      {avatarSrc ? (
-  <div className="h-24 w-24 rounded-md shadow-md overflow-hidden flex items-center justify-center bg-gray-50">
-    <img 
-      src={avatarSrc} 
-      alt="Avatar" 
-      className="max-h-full max-w-full object-contain"
-    />
-  </div>
-) : showIcon && IconComponent ? (
-        <div className="w-24 h-24 flex items-center justify-center rounded-md bg-gray-100 shadow-md">
-          <IconComponent size={iconSize} className="text-gray-500" />
+      <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 px-3 -mt-4 sm:mt-0 pb-0">
+        {/* Image Section — responsive positioning */}
+        <div className="flex justify-center sm:block">
+          {avatarSrc ? (
+            <Avatar className="h-24 w-24 rounded-md shadow-md">
+              <AvatarImage 
+                src={avatarSrc} 
+                alt="Avatar" 
+                className="object-contain"
+                style={{ objectFit: 'contain' }}
+              />
+              <AvatarFallback>{avatarFallback}</AvatarFallback>
+            </Avatar>
+          ) : showIcon && IconComponent ? (
+            <div className="w-24 h-24 flex items-center justify-center rounded-md bg-gray-100 shadow-md">
+              <IconComponent size={iconSize} className="text-gray-500" />
+            </div>
+          ) : null}
         </div>
-      ) : null}
-    </div>
 
-    {/* Content Section — always left aligned */}
-    <div className="flex-1 text-left">
-      <CardTitle className="text-lg font-semibold">
-        {href ? (
-          <a href={href} target={target} className="inline-flex items-center gap-2 hover:underline">
-            {title}
-            <FaExternalLinkAlt size={12} className="opacity-60" />
-          </a>
-        ) : (
-          title
-        )}
-      </CardTitle>
-      <CardDescription className="text-sm mt-1">
-        {description}
-      </CardDescription>
-    </div>
-  </div>
-</Card>
+        {/* Content Section — always left aligned */}
+        <div className="flex-1 text-left">
+          <CardTitle className="text-lg font-semibold">
+            {href ? (
+              <a 
+                href={href} 
+                target={linkTarget} 
+                rel={isExternal ? "noopener noreferrer" : undefined}
+                className="inline-flex items-center gap-2 hover:underline"
+              >
+                {title}
+                {isExternal && <FaExternalLinkAlt size={12} className="opacity-60" />}
+              </a>
+            ) : (
+              title
+            )}
+          </CardTitle>
+          <CardDescription className="text-sm mt-1">
+            {description}
+          </CardDescription>
+        </div>
+      </div>
+    </Card>
   );
 }
