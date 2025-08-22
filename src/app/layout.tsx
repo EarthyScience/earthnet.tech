@@ -20,8 +20,13 @@ export default function RootLayout({
       <body
         className="antialiased"
       >
-        <ThemeProvider defaultTheme="system">
-        <Menu />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Menu />
           {children}
           <Footer />
         </ThemeProvider>
