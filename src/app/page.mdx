@@ -1,54 +1,99 @@
-import ContentSplitSection from '@/components/ContentSplitSection';
-import Image from 'next/image';
-import { MagicBox } from '@/components/MagicBox'
-import { CustomCard, CustomCardHorizontal } from '@/components/CustomCard';
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { CustomCard, CustomCardHorizontal } from "@/components/CustomCard";
+import { WiStars } from "react-icons/wi";
+import Link from "next/link";
 
-<div className={`w-full rounded-lg overflow-hidden`}>
-  <div className="mx-auto py-2 md:py-2 flex flex-col md:flex-row items-center">
-      <>
-      <div className="md:w-2/3 mb-8 md:mb-0 md:mx-8 text-center md:text-left">
-        <h1 
-          className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-bold leading-tight px-2 -mb-3"
-          style={{
-            background: 'linear-gradient(90deg, #2563eb, #22c55e, #0d9488)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
-          }}
-        >
-          EarthNet Initiative
-        </h1>
-        <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold leading-tight px-2 text-gray-700">
-          Towards Earth surface forecasting
-        </h2>
+export default function Landing() {
+  return (
+    <section className="relative w-full min-h-screen flex flex-col items-center justify-between overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 z-0 select-none">
+        <Image
+          alt="Earth from space - light mode"
+          className="z-0 w-full h-full object-cover block dark:hidden pointer-events-none"
+          src="/place_holder.jpg"
+          fill
+          quality={100}
+          priority
+        />
+        <Image
+          alt="Earth from space - dark mode"
+          className="z-0 w-full h-full object-cover hidden dark:block pointer-events-none"
+          src="/place_holder_white.jpg"
+          fill
+          quality={100}
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
       </div>
-        <div className={`md:w-1/2 flex justify-center md:mx-8`}>
-        <MagicBox />
+
+      {/* Hero Content */}
+      <div className="relative z-10 flex flex-col items-center text-center max-w-4xl px-6 pt-24">
+        {/* Small badge */}
+       <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-gray-600/20 px-4 py-1 text-sm text-white hover:bg-gray-900/30 transition">
+        <Link href="/science/weathergenerator" className="flex items-center gap-2">
+          <WiStars size={18} className="text-white-300" />
+          <span>New: WeatherGenerator Project</span>
+        </Link>
+      </div>
+
+        {/* Main headline */}
+        <h1 className="text-4xl md:text-6xl font-bold leading-tight text-white">
+          Forecasting Earth’s Future with AI
+        </h1>
+
+        {/* Subheading */}
+        <p className="mt-4 text-lg md:text-xl text-gray-300 max-w-2xl">
+          Never miss the signals of change. From crop yields to ecosystem health,
+          we help predict the future of Earth’s surface.
+        </p>
+
+        {/* CTA */}
+        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+          <Button
+            size="lg"
+            className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white px-8"
+            asChild
+          >
+            <a href="/science">Explore Our Research</a>
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            className="border-2 border-gray-300 text-gray-200 bg-black hover:bg-gray-200/10"
+            asChild
+          >
+            <Link href="/resources/datasets">Access Datasets</Link>
+          </Button>
         </div>
-      </>
-  </div>
-</div>
+      </div>
 
-{/* set a grid of cards */}
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-<CustomCardHorizontal
-  title="Earth Surface Forecasting"
-  description="Using Machine Learning to forecast the dynamics of Earth's surface, we can predict crop yield, forest health, the effects of a drought and more."
-  href="/science"
-  avatarSrc="publication_preview/requenamesa_earthvision_2021.gif"
-/>
+      {/* Cards Section (inline with hero, still visible) */}
+      <div className="relative z-10 w-full max-w-6xl px-6 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <CustomCardHorizontal
+            title="Earth Surface Forecasting"
+            description="Using Machine Learning to forecast the dynamics of Earth's surface, we can predict crop yield, forest health, the effects of a drought and more."
+            href="/science"
+            avatarSrc="publication_preview/requenamesa_earthvision_2021.gif"
+          />
 
-<CustomCard
-  title="EarthNet Team"
-  description="Meet our team."
-  href="/team"
-  avatarSrc="https://github.com/shadcn.png"
-  avatarFallback="AI"
-/>
+          <CustomCard
+            title="EarthNet Team"
+            description="Meet our team."
+            href="/team"
+            avatarSrc="https://github.com/shadcn.png"
+            avatarFallback="AI"
+          />
 
-<CustomCard
-  title="Opportunities"
-  description="Come work or collaborate with us!"
-  href="/resources/opportunities"
-/>
-</div>
+          <CustomCard
+            title="Opportunities"
+            description="Come work or collaborate with us!"
+            href="/resources/opportunities"
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
