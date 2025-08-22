@@ -11,25 +11,23 @@ type ThemeToggleProps = {
 
 export default function ThemeToggle({ className }: ThemeToggleProps) {
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return null;
-  }
+  if (!mounted) return null;
 
   return (
     <Button
       variant="ghost"
       size="icon"
       className={`rounded-md p-2 hover:bg-accent/50 ${className || ""}`}
-      onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-      title={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+      onClick={() => setTheme(resolvedTheme === 'light' ? 'dark' : 'light')}
+      title={`Switch to ${resolvedTheme === 'light' ? 'dark' : 'light'} theme`}
     >
-      {theme === 'light' ? (
+      {resolvedTheme === 'light' ? (
         <FiMoon className="size-6" />
       ) : (
         <FiSun className="size-6" />

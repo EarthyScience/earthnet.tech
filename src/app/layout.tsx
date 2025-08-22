@@ -16,15 +16,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html suppressHydrationWarning lang="en">
-      <body
-        className="antialiased"
-      >
+    <html lang="en" suppressHydrationWarning>
+      <body className="min-h-screen bg-background antialiased">
         <ThemeProvider
-          attribute="class"
+          attribute="data-theme"
           defaultTheme="system"
           enableSystem
-          disableTransitionOnChange
         >
           <Menu />
           {children}
