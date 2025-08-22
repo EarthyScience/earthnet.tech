@@ -96,7 +96,7 @@ export const CustomCardHorizontal = ({
   title,
   description,
   href,
-  target, // Remove default value
+  target,
   avatarSrc = null,
   avatarFallback = "CN",
   showIcon = false,
@@ -108,49 +108,45 @@ export const CustomCardHorizontal = ({
   const linkTarget = target || (isExternal ? "_blank" : "_self");
 
   return (
-    <Card className={`w-full max-w-sm mx-auto min-w-0 hover:shadow-md transition-shadow duration-200 ${className}`}>
-      <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 px-3 -mt-4 sm:mt-0 pb-0">
-        {/* Image Section — responsive positioning */}
-        <div className="flex justify-center sm:block">
-          {avatarSrc ? (
-            <Avatar className="h-24 w-24 rounded-md shadow-md">
-              <AvatarImage 
-                src={avatarSrc} 
-                alt="Avatar" 
-                className="object-contain"
-                style={{ objectFit: 'contain' }}
-              />
-              <AvatarFallback>{avatarFallback}</AvatarFallback>
-            </Avatar>
-          ) : showIcon && IconComponent ? (
-            <div className="w-24 h-24 flex items-center justify-center rounded-md bg-gray-100 shadow-md">
-              <IconComponent size={iconSize} className="text-gray-500" />
-            </div>
-          ) : null}
-        </div>
+    <Card
+      className={`w-full max-w-sm mx-auto min-w-0 hover:shadow-md transition-shadow duration-200 ${className}`}
+    >
+      <div className="px-3 pb-0 -mt-4 sm:mt-0 text-left clearfix">
+        {/* Floated avatar or icon */}
+        {avatarSrc ? (
+          <Avatar className="h-24 w-24 rounded-md shadow-md float-left mr-3 mb-2 mt-2 sm:mt-0">
+            <AvatarImage src={avatarSrc} alt="Avatar" className="object-contain" />
+            <AvatarFallback>{avatarFallback}</AvatarFallback>
+          </Avatar>
+        ) : showIcon && IconComponent ? (
+          <div className="w-24 h-24 float-left mr-3 mb-2 mt-2 sm:mt-0 flex items-center justify-center rounded-md bg-gray-100 shadow-md">
+            <IconComponent size={iconSize} className="text-gray-500" />
+          </div>
+        ) : null}
 
-        {/* Content Section — always left aligned */}
-        <div className="flex-1 text-left">
-          <CardTitle className="text-lg font-semibold">
-            {href ? (
-              <a 
-                href={href} 
-                target={linkTarget} 
-                rel={isExternal ? "noopener noreferrer" : undefined}
-                className="inline-flex items-center gap-2 hover:underline"
-              >
-                {title}
-                {isExternal && <FaExternalLinkAlt size={12} className="opacity-60" />}
-              </a>
-            ) : (
-              title
-            )}
-          </CardTitle>
-          <CardDescription className="text-sm mt-1">
-            {description}
-          </CardDescription>
-        </div>
+        {/* Content */}
+        <CardTitle className="text-lg font-semibold break-words">
+          {href ? (
+            <a
+              href={href}
+              target={linkTarget}
+              rel={isExternal ? "noopener noreferrer" : undefined}
+              className="inline-flex flex-wrap items-center gap-2 hover:underline break-words"
+            >
+              <span className="break-words">{title}</span>
+              {isExternal && (
+                <FaExternalLinkAlt size={12} className="opacity-60 flex-shrink-0" />
+              )}
+            </a>
+          ) : (
+            title
+          )}
+        </CardTitle>
+
+        <CardDescription className="text-sm mt-1">
+          {description}
+        </CardDescription>
       </div>
     </Card>
   );
-}
+};
