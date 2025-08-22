@@ -23,7 +23,7 @@
   --border: oklch(0.2 0 0 / 10%);
   /* Default light theme colors */
   --background-funding: rgb(0, 109, 102);
-  --navbar-bg: rgba(255, 255, 255, 0.95);
+  --navbar-bg: rgba(255, 255, 255, 0.15);
   --navbar-border: #E1E5EB;
   --link-color: #1E293B;
   --secondary-link-color: #4B5563;
@@ -67,6 +67,9 @@
 
 [data-theme='light'] {
   --funding-text: #ebebed;
+  a:hover {
+  color:var(--accent-2); /* Remove hover color for light theme */
+  }
 }
 
 [data-theme='dark'] {
@@ -90,7 +93,7 @@
   
   /* Dark theme custom colors */
   --background-funding: rgb(32, 33, 38);
-  --navbar-bg: rgba(22, 22, 24, 0.95);
+  --navbar-bg: rgba(22, 22, 24, 0.15);
   --navbar-border:var(--border);
   --link-color: #e2e8f0;
   --secondary-link-color: #c4c6ca;
@@ -146,8 +149,9 @@ a {
   transition: color 0.3s ease;
 }
 
+ /* Use accent-1 color for all hover links */
 a:hover {
-  color: var(--accent-1); /* Use accent-1 color for all hover links */
+  color: var(--accent-3);
 }
 
 /* Paragraph Styling */
